@@ -3,17 +3,36 @@ package ans.mbds;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import crypto.AESDeCryptor;
+import crypto.AESEnCryptor;
 import network.Server;
 import nfctools.Nfc;
 
 public class MainActivity extends AppCompatActivity implements Listener{
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    private static final String SAMPLE_ALIAS = "MYALIAS";
 
     private EditText mEtMessage;
     private Button mBtWrite;
@@ -23,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements Listener{
     private boolean isDialogDisplayed = false;
     private boolean isWrite = false;
     private Nfc mNfc;
+    AESEnCryptor encryptor;
+    AESDeCryptor decryptor;
+
+    private String ANDROID_KEY_STORE = "AndroidKeyStore";
+    private KeyStore keyStore = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +54,44 @@ public class MainActivity extends AppCompatActivity implements Listener{
         setContentView(R.layout.activity_main);
         initViews();
         initNFC();
+
         new Server().startSendHttpRequestThread("https://www.google.com/");
+        encryptor = new AESEnCryptor();
+        try {
+            decryptor = new AESDeCryptor();
+            encryptText();
+            decryptText();
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException |
+                IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void decryptText() {
+        try {
+            Log.i("MainEncryptingsomethink", decryptor
+                    .decryptData(SAMPLE_ALIAS, encryptor.getEncryption(), encryptor.getIv()));
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
+                KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
+                IOException | InvalidKeyException e) {
+            Log.e(TAG, "decryptData() called with: " + e.getMessage(), e);
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void encryptText() {
+        try {
+            final byte[] encryptedText = encryptor
+                    .encryptText(SAMPLE_ALIAS, "helloWorld");
+            Log.i("MainEncryptingsomethink", Base64.encodeToString(encryptedText, Base64.DEFAULT));
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
+                KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
+            Log.e(TAG, "onClick() called with: " + e.getMessage(), e);
+        } catch (InvalidAlgorithmParameterException | SignatureException |
+                IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initViews() {
