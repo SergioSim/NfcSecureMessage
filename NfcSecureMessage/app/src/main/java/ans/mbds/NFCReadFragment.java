@@ -1,9 +1,6 @@
 package ans.mbds;
 
 import android.content.Context;
-import android.nfc.FormatException;
-import android.nfc.NdefMessage;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -13,14 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.io.IOException;
+import nfctools.Nfc;
 
 public class NFCReadFragment extends DialogFragment {
 
     public static final String TAG = NFCReadFragment.class.getSimpleName();
 
     public static NFCReadFragment newInstance() {
-
         return new NFCReadFragment();
     }
 
@@ -30,14 +26,12 @@ public class NFCReadFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_read,container,false);
         initViews(view);
         return view;
     }
 
     private void initViews(View view) {
-
         mTvMessage = view.findViewById(R.id.tv_message);
     }
 
@@ -54,24 +48,13 @@ public class NFCReadFragment extends DialogFragment {
         mListener.onDialogDismissed();
     }
 
-    public void onNfcDetected(Ndef ndef){
-
-        readFromNFC(ndef);
+    public void onNfcDetected(Nfc mNfc){
+        readFromNFC(mNfc);
     }
 
-    private void readFromNFC(Ndef ndef) {
-
-        try {
-            ndef.connect();
-            NdefMessage ndefMessage = ndef.getNdefMessage();
-            String message = new String(ndefMessage.getRecords()[0].getPayload());
-            Log.d(TAG, "readFromNFC: "+message);
-            mTvMessage.setText(message);
-            ndef.close();
-
-        } catch (IOException | FormatException e) {
-            e.printStackTrace();
-
-        }
+    private void readFromNFC(Nfc mNfc) {
+        String message = mNfc.read();
+        Log.d(TAG, "readFromNFC: "+ message);
+        mTvMessage.setText(message);
     }
 }
