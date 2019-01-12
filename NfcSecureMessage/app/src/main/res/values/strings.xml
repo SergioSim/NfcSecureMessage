@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">NfcSecureMessage</string>
+    <string name="message_tag_detected">NFC tag detected!</string>
+    <string name="message_read_tag">read NFC tag</string>
+    <string name="message_write_tag">Writing to Tag...</string>
+    <string name="message_tap_tag">Tap the NFC Tag to your device !</string>
+    <string name="hint_message">Message</string>
+    <string name="message_write_progress">Writing to Tag...</string>
+    <string name="message_write_success">Successfully written to Tag !</string>
+    <string name="message_write_error">Error Writing Message !</string>
 </resources>
