@@ -19,7 +19,7 @@ import java.nio.charset.Charset;
  * How To:
  * 1 - create new Nfc(context)
  * 2 - startListening(activity, class)
- * 3 - onNewIntent()
+ * 3 - onNewIntent(intent)
  * 4 - then you can read() / write(string)
  * 5 - don't forget to stopListening(activity)
  * **/
@@ -62,19 +62,18 @@ public class Nfc {
 
 
     public String read(){
+        String message = "null";
         try {
             ndef.connect();
             NdefMessage ndefMessage = ndef.getNdefMessage();
-            String message = "null";
             if(ndefMessage != null) {
                 message = new String(ndefMessage.getRecords()[0].getPayload());
             }
             ndef.close();
-            return message;
         } catch (IOException | FormatException e) {
             e.printStackTrace();
         }
-        return null;
+        return message;
     }
 
     public boolean write(String str){
@@ -84,11 +83,11 @@ public class Nfc {
                 NdefRecord mimeRecord = NdefRecord.createMime("text/plain", str.getBytes(Charset.forName("US-ASCII")));
                 ndef.writeNdefMessage(new NdefMessage(mimeRecord));
                 ndef.close();
-                return true;
             } catch (IOException | FormatException e) {
                 e.printStackTrace();
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }

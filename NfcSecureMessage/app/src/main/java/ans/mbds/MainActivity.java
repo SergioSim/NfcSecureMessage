@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import network.Server;
 import nfctools.Nfc;
 
 public class MainActivity extends AppCompatActivity implements Listener{
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements Listener{
         setContentView(R.layout.activity_main);
         initViews();
         initNFC();
+        new Server().startSendHttpRequestThread("https://www.google.com/");
     }
 
     private void initViews() {
