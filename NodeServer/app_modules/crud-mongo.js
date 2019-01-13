@@ -1,9 +1,8 @@
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
-
 var assert = require('assert');
 //var url = 'mongodb://localhost:27017/test';
-
+const jwt = require('jsonwebtoken');
 // Connection URL
 const url = 'mongodb://localhost:27017';
 
@@ -50,8 +49,8 @@ exports.sendMessage = function(formData, callback) {
 	    if(!err) {
 	
             let toInsert = {
-                author : "nadir",
-                message : "nadir", 
+                author : formData.receiver,
+                message : formData.message, 
             };
             
 			console.dir(JSON.stringify(toInsert));
@@ -66,13 +65,13 @@ exports.sendMessage = function(formData, callback) {
 		                succes : true,
 		                result: insertedId.ops[0]._id,
 		                error : null,
-		                msg: "Ajout réussi " + insertedId.ops[0]._id
+		                msg: "Envoie de message reussi " + insertedId.ops[0]._id
 		            };
 		        } else {
 		            reponse = {
 		                succes : false,
 		                error : err,
-		                msg: "Problème à l'insertion"
+		                msg: "Problème à l'envoie de message"
 		            };
 		        }
 		        callback(reponse);
@@ -81,7 +80,7 @@ exports.sendMessage = function(formData, callback) {
 			let reponse = reponse = {
                     	succes: false,
                         error : err,
-                        msg:"Problème lors de l'insertion, erreur de connexion."
+                        msg:"Problème lors de l'envoie, erreur de connexion."
                     };
             callback(reponse);
 		}
@@ -109,6 +108,7 @@ exports.createUser = function(formData, callback) {
 		    	console.log('++++'+insertedId)
 
 		        if(!err){
+                    //{"succes":true,"result":"5c3b025ca94f0a32e447ee76","error":null,"msg":"Ajout réussi 5c3b025ca94f0a32e447ee76"}
 		            reponse = {
 		                succes : true,
 		                result: insertedId.ops[0]._id,
@@ -133,4 +133,73 @@ exports.createUser = function(formData, callback) {
             callback(reponse);
 		}
 	});
+}
+
+/*
+passport.use(new Strategy(
+
+	function(token, cb) {
+  
+	  db.users.findOne({_id:token}, function(err, user) {
+  
+		if (err) { return cb(err); }
+  
+		if (!user) { return cb(null, false); }
+  
+		return cb(null, user);
+  
+	  });
+  
+	}));
+  */
+  
+
+
+exports.login = function(formData, callback) {
+
+MongoClient.connect(url, function(err, client) {
+    var db = client.db(dbName);
+    if(!err) {
+
+        let myquery = {"username": formData.username,"password": formData.password};
+		 
+		const user={
+			username:formData.username,
+			password:formData.password
+		}
+		
+        db.collection("utilisateur") 
+        .findOne(myquery, function(err, data) {
+            let reponse;
+
+				
+            if(!err){
+				
+			
+                reponse = {
+								username:data.username,
+								access_token:jwt.sign({user}, 'secretkey')
+
+								};
+            } else{
+                reponse = {
+                    succes: false,
+                    plugin : null,
+                    error : err,
+                    msg: "erreur lors du find"
+
+                };
+            }
+            callback(reponse);
+        });
+    } else {
+        let reponse = reponse = {
+                    succes: false,
+                    plugin : null,
+                    error : err,
+                    msg: "erreur de connexion à la base"
+                };
+        callback(reponse);
+    }
+});
 }
