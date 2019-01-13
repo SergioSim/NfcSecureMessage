@@ -3,7 +3,11 @@ package ans.mbds;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Conversation extends AppCompatActivity {
+import utils.Logging;
+
+public class ConversationActivity extends AppCompatActivity {
+
+    public static final String TAG = Logging.getTAG(ConversationActivity.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

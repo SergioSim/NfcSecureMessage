@@ -15,7 +15,8 @@ tools:context=".MainActivity">
     android:id="@+id/et_message"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="@string/hint_message"/>
+    android:hint="@string/hint_message"
+    android:inputType="" />
 
 <Button
     android:id="@+id/btn_write"
@@ -34,4 +35,5 @@ tools:context=".MainActivity">
     android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:text="@string/message_read_tag"
     style="@style/Widget.AppCompat.Button.Colored"/>
+
 </RelativeLayout>

@@ -1,9 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    tools:context=".Conversation">
+    android:layout_width="match_parent"
+    android:background="@android:color/holo_red_light"
+    android:orientation="vertical"
+    android:weightSum="10">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="8"
+        android:background="@android:color/white">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:layout_height="0dp">
+
+        <Button
+            android:id="@+id/messageSendButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorAccent"
+            android:color="#9FE554"
+            android:textColor="@android:color/white"
+            android:text="@string/btnSend"
+            android:layout_marginStart="10dp"/>
+
+        <EditText
+            android:id="@+id/messageText"
+            android:layout_width="match_parent"
+            android:gravity="fill_horizontal"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:maxLines="3"
+            android:padding="10dp"
+            android:scrollbars="vertical"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:hint="@string/write_your_message_here"
+            android:layout_marginStart="10dp" />
+    </LinearLayout>
+</LinearLayout>

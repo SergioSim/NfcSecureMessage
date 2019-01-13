@@ -28,6 +28,7 @@ public class SplashActivity extends AppCompatActivity {
         }else{
             intent = new Intent(getApplicationContext(), CreatePasswordActivity.class);
         }
+        intent = new Intent(getApplicationContext(), ConversationActivity.class); //TODO REMOVE THIS LINE!
         startActivity(intent);
         finish();
     }
