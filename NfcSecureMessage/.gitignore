@@ -9,3 +9,6 @@
 /build
 /captures
 .externalNativeBuild
+.idea/dbnavigator.xml
+../.DS_Store
+/.idea/codeStyles/Project.xml
