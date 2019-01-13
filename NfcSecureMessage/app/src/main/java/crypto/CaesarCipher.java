@@ -4,6 +4,7 @@ import java.util.*;
 public class CaesarCipher
 {
     public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+
     public static String encrypt(String plainText, int shiftKey)
     {
         plainText = plainText.toLowerCase();
@@ -40,16 +41,5 @@ public class CaesarCipher
             plainText += replaceVal;
         }
         return plainText;
-    }
-
-    public static void main(String[] args)
-    {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the String for Encryption: ");
-        String message = new String();
-        message = sc.nextLine();
-        System.out.println(encrypt(message, 3));
-        System.out.println(decrypt(encrypt(message, 3), 3));
-        sc.close();
     }
 }
