@@ -18,4 +18,5 @@
     <string name="enter_password">Enter Password</string>
     <string name="btnSend">send</string>
     <string name="write_your_message_here">write your message here</string>
+    <string name="message_cell">message cell</string>
 </resources>
