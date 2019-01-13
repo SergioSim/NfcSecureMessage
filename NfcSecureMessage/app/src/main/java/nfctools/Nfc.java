@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
  * 1 - create new Nfc(context)
  * 2 - startListening(activity, class)
  * 3 - onNewIntent(intent)
- * 4 - then you can read() / write(string)
+ * 4 - then you can read(string) / write(string) or rawRead(bytes) / rawWrite(bytes)
  * 5 - don't forget to stopListening(activity)
  * **/
 public class Nfc {
@@ -76,11 +76,41 @@ public class Nfc {
         return message;
     }
 
+    public byte[] rawRead(){
+        byte[] rawMessage = null;
+        try {
+            ndef.connect();
+            NdefMessage ndefMessage = ndef.getNdefMessage();
+            if(ndefMessage != null) {
+                rawMessage = ndefMessage.getRecords()[0].getPayload();
+            }
+            ndef.close();
+        } catch (IOException | FormatException e) {
+            e.printStackTrace();
+        }
+        return rawMessage;
+    }
+
     public boolean write(String str){
         if (ndef != null) {
             try {
                 ndef.connect();
                 NdefRecord mimeRecord = NdefRecord.createMime("text/plain", str.getBytes(Charset.forName("US-ASCII")));
+                ndef.writeNdefMessage(new NdefMessage(mimeRecord));
+                ndef.close();
+            } catch (IOException | FormatException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean rawWrite(byte[] messageBytes){
+        if (ndef != null) {
+            try {
+                ndef.connect();
+                NdefRecord mimeRecord = NdefRecord.createMime("application/octet-stream", messageBytes);
                 ndef.writeNdefMessage(new NdefMessage(mimeRecord));
                 ndef.close();
             } catch (IOException | FormatException e) {
