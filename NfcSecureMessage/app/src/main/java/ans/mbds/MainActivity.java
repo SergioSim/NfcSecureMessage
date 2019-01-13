@@ -12,11 +12,9 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
@@ -28,10 +26,11 @@ import crypto.AESDeCryptor;
 import crypto.AESEnCryptor;
 import network.Server;
 import nfctools.Nfc;
+import utils.Logging;
 
 public class MainActivity extends AppCompatActivity implements Listener{
 
-    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = Logging.getTAG(MainActivity.class);
     private static final String SAMPLE_ALIAS = "MYALIAS";
 
     private EditText mEtMessage;
@@ -44,9 +43,6 @@ public class MainActivity extends AppCompatActivity implements Listener{
     private Nfc mNfc;
     AESEnCryptor encryptor;
     AESDeCryptor decryptor;
-
-    private String ANDROID_KEY_STORE = "AndroidKeyStore";
-    private KeyStore keyStore = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements Listener{
                 IOException e) {
             e.printStackTrace();
         }
-        new Server().startSendHttpRequestThread("https://www.google.com/");
         encryptor = new AESEnCryptor();
         try {
             decryptor = new AESDeCryptor();
@@ -79,10 +74,10 @@ public class MainActivity extends AppCompatActivity implements Listener{
 
     private void decryptText() {
         try {
-            Log.i("MainEncryptingsomethink", decryptor
+            Log.i(TAG, "decryptor: " + decryptor
                     .decryptData(SAMPLE_ALIAS, encryptor.getEncryption(), encryptor.getIv()));
         } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
-                KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
+                KeyStoreException | NoSuchPaddingException |
                 IOException | InvalidKeyException e) {
             Log.e(TAG, "decryptData() called with: " + e.getMessage(), e);
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
@@ -94,11 +89,11 @@ public class MainActivity extends AppCompatActivity implements Listener{
         try {
             final byte[] encryptedText = encryptor
                     .encryptText(SAMPLE_ALIAS, "helloWorld");
-            Log.i("MainEncryptingsomethink", Base64.encodeToString(encryptedText, Base64.DEFAULT));
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
+            Log.i(TAG, "encryptedText: " + Base64.encodeToString(encryptedText, Base64.DEFAULT));
+        } catch ( NoSuchAlgorithmException | NoSuchProviderException |
+                IOException | NoSuchPaddingException | InvalidKeyException e) {
             Log.e(TAG, "onClick() called with: " + e.getMessage(), e);
-        } catch (InvalidAlgorithmParameterException | SignatureException |
+        } catch (InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }

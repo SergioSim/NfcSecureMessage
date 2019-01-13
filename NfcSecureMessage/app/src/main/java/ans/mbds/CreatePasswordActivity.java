@@ -16,8 +16,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import crypto.AppPassword;
+import utils.Logging;
 
 public class CreatePasswordActivity extends AppCompatActivity {
+
+    public static final String TAG = Logging.getTAG(CreatePasswordActivity.class);
 
     EditText password, password2;
     Button button;
@@ -47,7 +50,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.saved_encrypted_password), Base64.encodeToString(encryptedPassword, Base64.DEFAULT));
                 editor.commit();
-                Log.i("theencryptedpasswordisC", Base64.encodeToString(encryptedPassword, Base64.DEFAULT));
+                Log.i(TAG, "encrypted password: " + Base64.encodeToString(encryptedPassword, Base64.DEFAULT));
                 Toast.makeText(this, "Password Created", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), EnterPasswordActivity.class);
                 startActivity(intent);

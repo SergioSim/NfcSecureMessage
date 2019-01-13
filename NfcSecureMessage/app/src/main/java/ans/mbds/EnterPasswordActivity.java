@@ -36,7 +36,7 @@ public class EnterPasswordActivity extends AppCompatActivity {
 
     private void handleClick() {
         String rawPassword = ediPassword.getText().toString();
-        if(AppPassword.isMatchingAppPassword(rawPassword, encryptedpassword) || true){ // TODO DEBUG why this is not working properly...
+        if(AppPassword.isMatchingAppPassword(rawPassword, encryptedpassword)){
             setButtonColor(Color.GREEN);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);

@@ -11,10 +11,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import nfctools.Nfc;
+import utils.Logging;
 
 public class NFCWriteFragment extends DialogFragment {
 
-    public static final String TAG = NFCWriteFragment.class.getSimpleName();
+    public static final String TAG = Logging.getTAG(NFCWriteFragment.class);
 
     public static NFCWriteFragment newInstance() {
         return new NFCWriteFragment();

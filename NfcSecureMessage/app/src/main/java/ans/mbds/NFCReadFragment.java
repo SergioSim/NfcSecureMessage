@@ -11,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import nfctools.Nfc;
+import utils.Logging;
 
 public class NFCReadFragment extends DialogFragment {
 
-    public static final String TAG = NFCReadFragment.class.getSimpleName();
+    public static final String TAG = Logging.getTAG(NFCReadFragment.class);
 
     public static NFCReadFragment newInstance() {
         return new NFCReadFragment();

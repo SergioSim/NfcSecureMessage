@@ -6,7 +6,6 @@ import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
@@ -47,7 +46,7 @@ public class AESDeCryptor {
 
     public String decryptData(final String alias, final byte[] encryptedData, final byte[] encryptionIv)
             throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException,
-            NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException,
+            NoSuchPaddingException, InvalidKeyException, IOException,
             BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException {
 
         final Cipher cipher = Cipher.getInstance(TRANSFORMATION);

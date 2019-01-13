@@ -2,6 +2,9 @@ const express  = require('express');
 const app      = express();
 const port     = process.env.PORT || 8080;
 const server   = require('http').Server(app);
+
+const jwt = require('jsonwebtoken');
+
 // pour les formulaires multiparts
 var multer = require('multer');
 var multerData = multer();
@@ -89,6 +92,17 @@ app.post('/api/createUser', multerData.fields([]), function(req, res) {
 
 		res.send(JSON.stringify(data)); 
 
+	});
+
+});
+
+
+
+app.post('/api/login', multerData.fields([]), function(req, res) {
+
+	mongoDBModule.login(req.body, function(data) {
+
+		res.send(JSON.stringify(data)); 
 	});
 
 });
