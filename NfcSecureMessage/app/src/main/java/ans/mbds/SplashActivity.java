@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import crypto.AppPassword;
+import utils.Logging;
 
 public class SplashActivity extends AppCompatActivity {
+
+    public static final String TAG = Logging.getTAG(SplashActivity.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +21,7 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         String passwordAlias = getString(R.string.saved_encrypted_password);
         String encryptedpassword = sharedPref.getString(passwordAlias, "defaultValue...");
-        Log.i("theencryptedpasswordis", encryptedpassword);
+        Log.i(TAG, "the encrypted password is: " + encryptedpassword);
         Intent intent;
         if(AppPassword.isCreated()){
             intent = new Intent(getApplicationContext(), EnterPasswordActivity.class);

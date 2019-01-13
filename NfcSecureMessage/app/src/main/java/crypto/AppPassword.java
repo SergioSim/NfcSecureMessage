@@ -18,9 +18,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import utils.Logging;
+
 public class AppPassword {
     public static final String PASSWORDALIAS = "PASSWORDALIAS";
-    public static final String TAG = AppPassword.class.getSimpleName();
+    private static final String TAG = Logging.getTAG(AppPassword.class);
     private static byte[] encryptedText = new byte[0];
 
     public AppPassword(){}
@@ -47,7 +49,7 @@ public class AppPassword {
         try {
             encryptedText = new AESEnCryptor()
                     .encryptText(PASSWORDALIAS, password);
-            Log.i(TAG, Base64.encodeToString(encryptedText, Base64.DEFAULT));
+            Log.i(TAG, "creating AppPassword: " + Base64.encodeToString(encryptedText, Base64.DEFAULT));
             return true;
         } catch ( NoSuchAlgorithmException | NoSuchProviderException |
                 IOException | NoSuchPaddingException | InvalidKeyException e) {
@@ -70,8 +72,8 @@ public class AppPassword {
             AESEnCryptor aesEnCryptor = new AESEnCryptor();
             final byte[] encryptedPassword = aesEnCryptor.encryptTextWithKey(password, secretKey);
             String encryptedpasswordStr = Base64.encodeToString(encryptedPassword, Base64.DEFAULT);
-            Log.i("CheckingPasswords1", encryptedpasswordStr);
-            Log.i("CheckingPasswords2", savedPassword);
+            Log.i(TAG, "encrypted password: " + encryptedpasswordStr);
+            Log.i(TAG, "saved Password: " + savedPassword);
             return savedPassword.equals(encryptedpasswordStr);
         } catch (CertificateException e) {
             e.printStackTrace();

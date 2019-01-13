@@ -20,11 +20,13 @@ import java.net.URLEncoder;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import utils.Logging;
+
 public class Server {
-    public static final String TAG = Server.class.getSimpleName();
+
+    private static final String TAG = Logging.getTAG(Server.class);
     private static final String KEY_RESPONSE_TEXT = "KEY_RESPONSE_TEXT";
     private static final int REQUEST_CODE_SHOW_RESPONSE_TEXT = 1;
-    private static final String TAG_HTTP_URL_CONNECTION = "HTTP_URL_CONNECTION";
 
     private URL url;
     private HttpURLConnection client = null;
@@ -35,7 +37,7 @@ public class Server {
                 Bundle bundle = msg.getData();
                 if (bundle != null) {
                     String responseText = bundle.getString(KEY_RESPONSE_TEXT);
-                    Log.i("HANDLERWTF", responseText);
+                    Log.i(TAG, "response Text: " + responseText);
                 }
             }
         }
@@ -167,13 +169,11 @@ public class Server {
                     handler.sendMessage(message);
                 }catch(MalformedURLException ex)
                 {
-                    Log.e(TAG_HTTP_URL_CONNECTION, ex.getMessage(), ex);
+                    Log.e(TAG, "exception: " + ex.getMessage(), ex);
                 }catch(IOException ex)
                 {
-                    Log.i("HANDLERWTF3", "");
-                    Log.e(TAG_HTTP_URL_CONNECTION, ex.getMessage(), ex);
+                    Log.e(TAG, "exception: " + ex.getMessage(), ex);
                 }finally {
-                    Log.i("HANDLERWTF4", "");
                     try {
                         if (bufReader != null) {
                             bufReader.close();
@@ -191,7 +191,7 @@ public class Server {
                         }
                     }catch (IOException ex)
                     {
-                        Log.e(TAG_HTTP_URL_CONNECTION, ex.getMessage(), ex);
+                        Log.e(TAG, "exception: " + ex.getMessage(), ex);
                     }
                 }
             }
