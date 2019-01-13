@@ -1,5 +1,6 @@
 package crypto;
-public class CaesarCipher
+
+public class CryptoTool
 {
     public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
