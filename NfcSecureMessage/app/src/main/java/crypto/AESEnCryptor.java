@@ -42,9 +42,9 @@ public class AESEnCryptor {
     }
 
     public byte[] encryptText(final String alias, final String textToEncrypt)
-            throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException,
+            throws NoSuchAlgorithmException,
             NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException,
-            InvalidAlgorithmParameterException, SignatureException, BadPaddingException,
+            InvalidAlgorithmParameterException, BadPaddingException,
             IllegalBlockSizeException {
 
         final Cipher cipher = Cipher.getInstance(TRANSFORMATION);

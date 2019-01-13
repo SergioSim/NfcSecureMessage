@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Listener{
             Log.i("MainEncryptingsomethink", decryptor
                     .decryptData(SAMPLE_ALIAS, encryptor.getEncryption(), encryptor.getIv()));
         } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
-                KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
+                KeyStoreException | NoSuchPaddingException |
                 IOException | InvalidKeyException e) {
             Log.e(TAG, "decryptData() called with: " + e.getMessage(), e);
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
@@ -95,10 +95,10 @@ public class MainActivity extends AppCompatActivity implements Listener{
             final byte[] encryptedText = encryptor
                     .encryptText(SAMPLE_ALIAS, "helloWorld");
             Log.i("MainEncryptingsomethink", Base64.encodeToString(encryptedText, Base64.DEFAULT));
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
+        } catch ( NoSuchAlgorithmException | NoSuchProviderException |
+                IOException | NoSuchPaddingException | InvalidKeyException e) {
             Log.e(TAG, "onClick() called with: " + e.getMessage(), e);
-        } catch (InvalidAlgorithmParameterException | SignatureException |
+        } catch (InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }

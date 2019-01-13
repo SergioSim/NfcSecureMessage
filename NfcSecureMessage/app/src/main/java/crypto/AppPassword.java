@@ -10,7 +10,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
@@ -50,10 +49,10 @@ public class AppPassword {
                     .encryptText(PASSWORDALIAS, password);
             Log.i(TAG, Base64.encodeToString(encryptedText, Base64.DEFAULT));
             return true;
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
+        } catch ( NoSuchAlgorithmException | NoSuchProviderException |
+                IOException | NoSuchPaddingException | InvalidKeyException e) {
             Log.e(TAG, "Error while creating password ... " + e.getMessage(), e);
-        } catch (InvalidAlgorithmParameterException | SignatureException |
+        } catch (InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
