@@ -65,6 +65,16 @@ public class MainActivity extends AppCompatActivity implements Listener{
                 IOException e) {
             e.printStackTrace();
         }
+        new Server().startSendHttpRequestThread("https://www.google.com/");
+        encryptor = new AESEnCryptor();
+        try {
+            decryptor = new AESDeCryptor();
+            encryptText();
+            decryptText();
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException |
+                IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void decryptText() {

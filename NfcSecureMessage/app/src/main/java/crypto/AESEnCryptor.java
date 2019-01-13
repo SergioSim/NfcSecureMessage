@@ -55,6 +55,18 @@ public class AESEnCryptor {
         return (encryption = cipher.doFinal(textToEncrypt.getBytes("UTF-8")));
     }
 
+    public byte[] encryptTextWithKey(final String textToEncrypt, SecretKey secretKey )
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException, BadPaddingException,
+            IllegalBlockSizeException {
+
+        final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+        iv = cipher.getIV();
+
+        return (encryption = cipher.doFinal(textToEncrypt.getBytes("UTF-8")));
+    }
+
     @NonNull
     private SecretKey getSecretKey(final String alias) throws NoSuchAlgorithmException,
             NoSuchProviderException, InvalidAlgorithmParameterException {

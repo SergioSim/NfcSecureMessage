@@ -8,4 +8,12 @@
     <string name="message_write_progress">Writing to Tag...</string>
     <string name="message_write_success">Successfully written to Tag !</string>
     <string name="message_write_error">Error Writing Message !</string>
+    <string name="loading">Loading...</string>
+    <string name="enter_new_password">Enter new Password</string>
+    <string name="enter_the_password_again">Enter the Password again</string>
+    <string name="enterPasswordText">The password must contain at least:\n   - 1 lowercase alphabetical character\n   - 1 uppercase alphabetical character\n   - 1 numeric character\n   - 1 special character\n   - 8 characters or longer</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="saved_encrypted_password">saved_encrypted_password</string>
+    <string name="enter">ENTER</string>
+    <string name="enter_password">Enter Password</string>
 </resources>

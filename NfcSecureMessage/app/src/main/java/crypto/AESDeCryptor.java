@@ -57,7 +57,7 @@ public class AESDeCryptor {
         return new String(cipher.doFinal(encryptedData), "UTF-8");
     }
 
-    private SecretKey getSecretKey(final String alias) throws NoSuchAlgorithmException,
+    public SecretKey getSecretKey(final String alias) throws NoSuchAlgorithmException,
             UnrecoverableEntryException, KeyStoreException {
         return ((KeyStore.SecretKeyEntry) keyStore.getEntry(alias, null)).getSecretKey();
     }
