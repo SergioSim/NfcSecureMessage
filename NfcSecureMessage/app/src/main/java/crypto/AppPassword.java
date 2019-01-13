@@ -47,16 +47,19 @@ public class AppPassword {
 
     public static boolean create(String password){
         try {
+            SecretKey sk = AESEnCryptor.simpleGenerateKey(PASSWORDALIAS);
             encryptedText = new AESEnCryptor()
-                    .encryptText(PASSWORDALIAS, password);
+                    .encryptTextWithKey(password, sk);
             Log.i(TAG, "creating AppPassword: " + Base64.encodeToString(encryptedText, Base64.DEFAULT));
             return true;
-        } catch ( NoSuchAlgorithmException | NoSuchProviderException |
+        } catch ( NoSuchAlgorithmException |
                 IOException | NoSuchPaddingException | InvalidKeyException e) {
             Log.e(TAG, "Error while creating password ... " + e.getMessage(), e);
         } catch (InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while creating password ... " + e.getMessage(), e);
+        } catch (NoSuchProviderException e) {
+            Log.e(TAG, "Error while creating password ... " + e.getMessage(), e);
         }
         return false;
     }
@@ -74,25 +77,25 @@ public class AppPassword {
             String encryptedpasswordStr = Base64.encodeToString(encryptedPassword, Base64.DEFAULT);
             Log.i(TAG, "encrypted password: " + encryptedpasswordStr);
             Log.i(TAG, "saved Password: " + savedPassword);
-            return savedPassword.equals(encryptedpasswordStr);
+            return savedPassword.trim().equals(encryptedpasswordStr.trim());
         } catch (CertificateException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (KeyStoreException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (UnrecoverableEntryException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (BadPaddingException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while matching password ... " + e.getMessage(), e);
         }
         return false;
     }

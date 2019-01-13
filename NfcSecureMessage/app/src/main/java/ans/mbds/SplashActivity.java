@@ -20,10 +20,10 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         String passwordAlias = getString(R.string.saved_encrypted_password);
-        String encryptedpassword = sharedPref.getString(passwordAlias, "defaultValue...");
+        String encryptedpassword = sharedPref.getString(passwordAlias, "");
         Log.i(TAG, "the encrypted password is: " + encryptedpassword);
         Intent intent;
-        if(AppPassword.isCreated()){
+        if(AppPassword.isCreated() && !encryptedpassword.equals("")){
             intent = new Intent(getApplicationContext(), EnterPasswordActivity.class);
         }else{
             intent = new Intent(getApplicationContext(), CreatePasswordActivity.class);
