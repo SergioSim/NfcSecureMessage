@@ -1,4 +1,4 @@
-package crypto;
+package cryptoTools;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;

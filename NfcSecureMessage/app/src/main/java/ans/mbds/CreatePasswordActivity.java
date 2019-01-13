@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import crypto.AppPassword;
+import cryptoTools.AppPassword;
 import utils.Logging;
 
 public class CreatePasswordActivity extends AppCompatActivity {

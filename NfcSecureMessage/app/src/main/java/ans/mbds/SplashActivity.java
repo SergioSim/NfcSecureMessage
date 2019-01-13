@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import crypto.AppPassword;
+import cryptoTools.AppPassword;
 import utils.Logging;
 
 public class SplashActivity extends AppCompatActivity {

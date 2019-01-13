@@ -1,4 +1,4 @@
-package crypto;
+package cryptoTools;
 
 public class CryptoTool
 {

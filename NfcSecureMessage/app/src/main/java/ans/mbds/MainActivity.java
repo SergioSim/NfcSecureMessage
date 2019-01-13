@@ -22,8 +22,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import crypto.AESDeCryptor;
-import crypto.AESEnCryptor;
+import cryptoTools.AESDeCryptor;
+import cryptoTools.AESEnCryptor;
 import network.Server;
 import nfctools.Nfc;
 import utils.Logging;

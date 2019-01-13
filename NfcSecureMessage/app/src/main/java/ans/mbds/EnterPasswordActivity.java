@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import crypto.AppPassword;
+import cryptoTools.AppPassword;
 
 public class EnterPasswordActivity extends AppCompatActivity {
 
