@@ -19,3 +19,26 @@ exports.connexionMongo = function(callback) {
 	});
 }
 
+exports.findMessages = function(callback) {
+    MongoClient.connect(url, function(err, client) {
+
+			var db = client.db(dbName);
+
+			console.log("db " + db)
+        if(!err){
+                    db.collection('message')
+                        .find()
+                        .toArray()
+                        .then(arr=>{
+                            db.collection('message')
+								.find()
+                                .count()
+                                .then(rep=>callback(arr,rep))
+					});
+			}       
+        else{
+            callback(-1);
+        }
+    });
+};
+
