@@ -1,6 +1,4 @@
 package crypto;
-import java.util.*;
-
 public class CaesarCipher
 {
     public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
