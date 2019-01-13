@@ -81,3 +81,17 @@ app.post('/api/sendMsg', multerData.fields([]), function(req, res) {
 	});
 
 });
+
+
+app.post('/api/createUser', multerData.fields([]), function(req, res) {
+
+	mongoDBModule.createUser(req.body, function(data) {
+
+		res.send(JSON.stringify(data)); 
+
+	});
+
+});
+
+
+
