@@ -49,13 +49,14 @@ public class NFCReadFragment extends DialogFragment {
         mListener.onDialogDismissed();
     }
 
-    public void onNfcDetected(Nfc mNfc){
-        readFromNFC(mNfc);
+    public String onNfcDetected(Nfc mNfc){
+        return readFromNFC(mNfc);
     }
 
-    private void readFromNFC(Nfc mNfc) {
+    private String readFromNFC(Nfc mNfc) {
         String message = mNfc.read();
         Log.d(TAG, "readFromNFC: "+ message);
         mTvMessage.setText(message);
+        return message;
     }
 }

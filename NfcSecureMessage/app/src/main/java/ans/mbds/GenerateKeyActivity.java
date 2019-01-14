@@ -87,8 +87,8 @@ public class GenerateKeyActivity extends AppCompatActivity implements Listener {
         }
         try{
             String value = cesarCipherEdi.getText().toString();
-            int finalValue = Integer.parseInt(value);
-            if(finalValue == 0){
+            cesarkey = Integer.parseInt(value);
+            if(cesarkey == 0){
                 setButtonColor(Color.RED);
                 Toast.makeText(this, "Cesar Cipher can't be 0!", Toast.LENGTH_SHORT).show();
                 return false;

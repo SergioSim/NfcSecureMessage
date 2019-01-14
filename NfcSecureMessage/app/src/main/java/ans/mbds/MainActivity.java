@@ -104,7 +104,15 @@ public class MainActivity extends AppCompatActivity implements Listener{
                     mNfcWriteFragment.onNfcDetected(mNfc,messageToWrite);
                 } else {
                     mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
-                    mNfcReadFragment.onNfcDetected(mNfc);
+                    String message = mNfcReadFragment.onNfcDetected(mNfc);
+                    String[] tagContent = message.split("\\|");
+                    Log.d(TAG, "tagContent: "+tagContent[0]);
+                    Log.d(TAG, "tagLength: "+tagContent.length);
+                    if(tagContent.length == 2){
+                        Intent conversationIntent = new Intent(this, ConversationActivity.class);
+                        conversationIntent.putExtra("contact", tagContent[0]);
+                        startActivity(conversationIntent);
+                    }
                 }
             }
         }
