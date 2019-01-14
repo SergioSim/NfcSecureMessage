@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView2"
@@ -30,7 +34,7 @@
             android:id="@+id/checkCesar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Cesar Cipher"
+            android:text="@string/cesar_cipher"
             android:layout_marginEnd="60dp"/>
 
         <LinearLayout
@@ -41,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Please choose a Integer key"/>
+                android:text="@string/please_choose_a_integer_key"/>
 
             <EditText
                 android:id="@+id/cesarcipherkey"
@@ -67,13 +71,28 @@
         android:gravity="center_horizontal"
         android:layout_marginTop="30dp"
         android:textColor="@color/colorAccent"
-        android:text="Please enter your Name" />
+        android:text="@string/please_enter_your_name" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:hint="Example: John"/>
+        android:hint="@string/example_john"/>
+
+    <TextView
+        android:id="@+id/enterPassTxv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/colorAccent"
+        android:text="@string/please_enter_a_password_to_encrypt_your_key" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/button"
@@ -85,3 +104,4 @@
         style="@style/Widget.AppCompat.Button.Colored"/>
 
     </LinearLayout>
+</ScrollView>

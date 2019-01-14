@@ -40,6 +40,17 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
             return;
         }
         db = Database.getIstance(this);
+        initRecycleView();
+        initViews();
+    }
+
+    private void initViews(){
+        btn = findViewById(R.id.messageSendButton);
+        btn.setOnClickListener(v -> onClick());
+        text = findViewById(R.id.messageText);
+    }
+
+    private void initRecycleView(){
         updateMessageList();
         mcAdapter = new MessageCellAdapter(this, messageList , this);
         recyclerView = findViewById(R.id.recycler_view);
@@ -48,10 +59,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setStackFromEnd(true);
         recyclerView.setLayoutManager(llm);
-
-        btn = findViewById(R.id.messageSendButton);
-        btn.setOnClickListener(v -> onClick());
-        text = findViewById(R.id.messageText);
     }
 
     private void onClick() {

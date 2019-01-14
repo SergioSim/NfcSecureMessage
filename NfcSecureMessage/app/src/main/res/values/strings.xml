@@ -21,4 +21,9 @@
     <string name="message_cell">message cell</string>
     <string name="generate_new_encrypted_nfc_tag">Generate new encrypted Nfc tag!</string>
     <string name="encryption_mode_for_your_nfc_tag">Please select the encryption mode for your nfc tag:</string>
+    <string name="cesar_cipher">Cesar Cipher</string>
+    <string name="please_choose_a_integer_key">Please choose a Integer key</string>
+    <string name="please_enter_your_name">Please enter your Name</string>
+    <string name="example_john">Example: John</string>
+    <string name="please_enter_a_password_to_encrypt_your_key">Please enter a password to encrypt your key</string>
 </resources>
