@@ -112,7 +112,7 @@ exports.createUser = function(formData, callback) {
 		            reponse = {
 		                succes : true,
 		                result: insertedId.ops[0]._id,
-		                error : null,
+						error : null,
 		                msg: "Ajout réussi " + insertedId.ops[0]._id
 		            };
 		        } else {
@@ -135,25 +135,6 @@ exports.createUser = function(formData, callback) {
 	});
 }
 
-/*
-passport.use(new Strategy(
-
-	function(token, cb) {
-  
-	  db.users.findOne({_id:token}, function(err, user) {
-  
-		if (err) { return cb(err); }
-  
-		if (!user) { return cb(null, false); }
-  
-		return cb(null, user);
-  
-	  });
-  
-	}));
-  */
-  
-
 
 exports.login = function(formData, callback) {
 
@@ -171,12 +152,8 @@ MongoClient.connect(url, function(err, client) {
         db.collection("utilisateur") 
         .findOne(myquery, function(err, data) {
             let reponse;
-
-				
-            if(!err){
-				
-			
-                reponse = {
+            if(!err){	
+                reponse = {     
 								username:data.username,
 								access_token:jwt.sign({user}, 'secretkey')
 

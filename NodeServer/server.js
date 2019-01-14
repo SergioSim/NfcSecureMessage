@@ -3,13 +3,11 @@ const app      = express();
 const port     = process.env.PORT || 8080;
 const server   = require('http').Server(app);
 
-const jwt = require('jsonwebtoken');
-
 // pour les formulaires multiparts
 var multer = require('multer');
 var multerData = multer();
 
-const mongoDBModule = require('./app_modules/crud-mongo');
+const mongoDBModule = require('./crud-mongo');
 
 // Pour les formulaires standards
 const bodyParser = require('body-parser');
