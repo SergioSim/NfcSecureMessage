@@ -29,6 +29,7 @@ public class SplashActivity extends AppCompatActivity {
             intent = new Intent(getApplicationContext(), CreatePasswordActivity.class);
         }
         intent = new Intent(getApplicationContext(), ConversationActivity.class); //TODO REMOVE THIS LINE!
+        intent.putExtra("contact", "contact");
         startActivity(intent);
         finish();
     }
