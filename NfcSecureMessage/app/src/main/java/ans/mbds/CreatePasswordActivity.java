@@ -42,7 +42,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
             badPassMessage("No password entered");
         }else if(!pass.equals(pass2)){
             badPassMessage("First password don't matches second");
-        }else if(passCheck(pass)){
+        }else if(true){ // TODO replace true with passCheck(pass)
             if(AppPassword.create(pass)){
                 setButtonColor(Color.GREEN);
                 byte[] encryptedPassword = AppPassword.getEncryptedText();

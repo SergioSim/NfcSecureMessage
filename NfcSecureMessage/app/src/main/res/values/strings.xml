@@ -19,4 +19,5 @@
     <string name="btnSend">send</string>
     <string name="write_your_message_here">write your message here</string>
     <string name="message_cell">message cell</string>
+    <string name="generate_new_encrypted_nfc_tag">Generate new encrypted Nfc tag!</string>
 </resources>
