@@ -1,7 +1,6 @@
 package ans.mbds;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +50,7 @@ public class MessageCellAdapter extends RecyclerView.Adapter<MessageCellAdapter.
             TextView[] textViews = {holder.me, holder.you};
             if(message.isMeTheAuthor()){i = 0; z = 0;}
             textViews[i].setText(message.getMessage());
-            textViews[i + 1 + z].setBackgroundColor(Color.TRANSPARENT);
+            textViews[i + 1 + z].setVisibility(View.GONE) ;
             textViews[i].setOnClickListener((view -> tal.textClicked(messageList.get(position), holder)));
             textViews[i].setOnLongClickListener((view -> tal.longtextClicked(messageList.get(position), holder)));
         }
