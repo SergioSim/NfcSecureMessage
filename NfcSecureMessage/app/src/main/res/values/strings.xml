@@ -20,4 +20,5 @@
     <string name="write_your_message_here">write your message here</string>
     <string name="message_cell">message cell</string>
     <string name="generate_new_encrypted_nfc_tag">Generate new encrypted Nfc tag!</string>
+    <string name="encryption_mode_for_your_nfc_tag">Please select the encryption mode for your nfc tag:</string>
 </resources>
