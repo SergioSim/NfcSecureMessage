@@ -1,5 +1,6 @@
 package ans.mbds;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,11 +14,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import cryptoTools.CryptoTool;
 import database.Database;
 import database.Message;
+import nfctools.Nfc;
 import utils.Logging;
 
-public class ConversationActivity extends AppCompatActivity implements MessageCellAdapterListener{
+public class ConversationActivity extends AppCompatActivity implements MessageCellAdapterListener, Listener{
 
     public static final String TAG = Logging.getTAG(ConversationActivity.class);
 
@@ -28,6 +31,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
     private MessageCellAdapter mcAdapter = null;
     private Button btn;
     private EditText text;
+    private NFCReadFragment mNfcReadFragment;
+    private boolean isDialogDisplayed = false;
+    private Nfc mNfc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
         db = Database.getIstance(this);
         initRecycleView();
         initViews();
+        initNFC();
     }
 
     private void initViews(){
@@ -62,11 +69,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
     }
 
     private void onClick() {
-        String theText = text.getText().toString();
-        Message message = new Message("Me", contact, contact, theText);
-        db.addMessage(message);
-        text.setText(null);
+        showReadFragment();
         onResume();
+    }
+
+    @Override
+    public void onDialogDisplayed() {
+        isDialogDisplayed = true;
+    }
+
+    @Override
+    public void onDialogDismissed() {
+        isDialogDisplayed = false;
     }
 
     @Override
@@ -77,10 +91,35 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
         mcAdapter = new MessageCellAdapter(this, messageList , this);
         recyclerView.setAdapter(mcAdapter);
         recyclerView.getAdapter().notifyDataSetChanged();
+        mNfc.startListening(this, getClass());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mNfc.stopListening(this);
+    }
+
+    private void initNFC(){
+        mNfc = new Nfc(this);
     }
 
     private void updateMessageList() {
         messageList = db.getMessageByConversation(contact);
+    }
+
+    private void saveMessage(String encryptedText){
+        Message message = new Message("Me", contact, contact, encryptedText);
+        db.addMessage(message);
+        text.setText(null);
+    }
+
+    private void showReadFragment() {
+        mNfcReadFragment = (NFCReadFragment) getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
+        if (mNfcReadFragment == null) {
+            mNfcReadFragment = NFCReadFragment.newInstance();
+        }
+        mNfcReadFragment.show(getSupportFragmentManager(),NFCReadFragment.TAG);
     }
 
     @Override
@@ -92,5 +131,28 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
     public boolean longtextClicked(Message message, MessageCellAdapter.MyViewHolder holder) {
         Log.i(TAG, "message long clicked: " + message.getMessage());
         return false;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "onNewIntent: "+intent.getAction());
+        if(mNfc.onNewIntent(intent)){
+            Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
+            if (isDialogDisplayed) {
+                    mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
+                    String message = mNfcReadFragment.onNfcDetected(mNfc);
+                    String[] tagContent = message.split("\\|");
+                    if(tagContent.length == 2){
+                        String theText = text.getText().toString();
+                        try {
+                            theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
+                            saveMessage(theText);
+                        }catch (NumberFormatException nfe){
+                            Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
+            }
     }
 }
