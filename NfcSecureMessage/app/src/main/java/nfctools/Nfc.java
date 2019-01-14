@@ -95,7 +95,7 @@ public class Nfc {
         if (ndef != null) {
             try {
                 ndef.connect();
-                NdefRecord mimeRecord = NdefRecord.createMime("text/plain", str.getBytes(Charset.forName("US-ASCII")));
+                NdefRecord mimeRecord = NdefRecord.createMime("text/plain", str.getBytes(Charset.forName("UTF-8")));
                 ndef.writeNdefMessage(new NdefMessage(mimeRecord));
                 ndef.close();
             } catch (IOException | FormatException e) {

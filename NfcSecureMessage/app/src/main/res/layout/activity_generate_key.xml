@@ -74,6 +74,7 @@
         android:text="@string/please_enter_your_name" />
 
     <EditText
+        android:id="@+id/genContactName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
@@ -90,12 +91,13 @@
         android:text="@string/please_enter_a_password_to_encrypt_your_key" />
 
     <EditText
+        android:id="@+id/genPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/genButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
