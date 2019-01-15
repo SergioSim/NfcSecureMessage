@@ -97,4 +97,9 @@ public class Message implements BaseColumns {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "Message -> id: " + id + " author: " + author + " recipient: " + recipient +
+                " conversation: " + conversation + " message: " + message + " date: " + date;
+    }
 }
