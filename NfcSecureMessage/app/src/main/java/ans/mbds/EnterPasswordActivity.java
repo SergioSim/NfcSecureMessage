@@ -38,7 +38,7 @@ public class EnterPasswordActivity extends AppCompatActivity {
         String rawPassword = ediPassword.getText().toString();
         if(AppPassword.isMatchingAppPassword(rawPassword, encryptedpassword)){
             setButtonColor(Color.GREEN);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
         }else{
