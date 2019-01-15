@@ -62,8 +62,7 @@ app.get('/api/connection', function(req, res) {
 
 app.get('/api/fetchMessages', function(req, res) { 
 
-
-	con.query("SELECT * FROM GrailsUser.nfc_message ", function (err, result) {
+	con.query("SELECT * FROM GrailsUser.nfc_message WHERE userLOGIN = ?",[req.body.userLOGIN], function (err, result) {
 		if (err)
 		{
 			res.send(JSON.stringify("Erreur"));

@@ -51,11 +51,11 @@ var con = mysql.createConnection({
 exports.sendMessage = function(req,res){
 
         var data = {   
-            user_id : req.userID,
+            userLOGIN : req.userLOGIN,
             message : req.message,
 		   };		
 		   	
-	    	con.query("INSERT INTO GrailsUser.nfc_message  (userID,message) VALUES (?,?)",[data.user_id,data.message],function(err, result){
+	    	con.query("INSERT INTO GrailsUser.nfc_message  (message,userLOGIN) VALUES (?,?)",[data.message,data.userLOGIN],function(err, result){
 				if (err) {
 					console.log(result+"result")
 					console.log(err)
