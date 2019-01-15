@@ -7,8 +7,8 @@ const server   = require('http').Server(app);
 var multer = require('multer');
 var multerData = multer();
 
-//const mongoDBModule = require('./app_modules/crud-mongo');
-
+const mysqlDB = require('./crud-mysql');
+console.log("on off")
 // Pour les formulaires standards
 const bodyParser = require('body-parser');
 // pour les formulaires multiparts
@@ -75,49 +75,28 @@ app.get('/api/fetchMessages', function(req, res) {
 	  });
 });
 
-/*
 
 app.post('/api/sendMsg', multerData.fields([]), function(req, res) {
 
-	var id=res.body;
 
-	console.log(multerData.fields)
-	
-	con.query("INSERT INTO GrailsUser.nfc_message  VALUES (1,'jflsdjf', 3)", function (err, result) {
-
-		if (err)
-		{
-			res.send(JSON.stringify(res.body));
-		}
-		else
-		{ 
-			res.send(JSON.stringify("message envoyé"));
-		}
-	  });
-});
-
-
-
-app.post('/api/createUser', multerData.fields([]), function(req, res) {
-
-
-		res.send(JSON.stringify(res.body)); 
-
-	
-
-});
-
-
-
-app.post('/api/login', multerData.fields([]), function(req, res) {
-
-	mongoDBModule.login(req.body, function(data) {
+	mysqlDB.sendMessage(req.body, function(data) {
 
 		res.send(JSON.stringify(data)); 
+
 	});
 
 });
 
 
 
-*/
+app.post('/api/createUser', multerData.fields([]), function(req, res) {
+
+	mysqlDB.createUser(req.body, function(data) {
+
+		res.send(JSON.stringify(data)); 
+
+	});
+
+});
+
+
