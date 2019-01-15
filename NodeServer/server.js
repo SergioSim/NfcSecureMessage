@@ -98,4 +98,17 @@ app.post('/api/createUser', multerData.fields([]), function(req, res) {
 
 });
 
+app.post('/api/login', multerData.fields([]), function(req, res) {
+
+	mysqlDB.login(req.body, function(data) {
+
+		res.send(JSON.stringify(data)); 
+
+	});
+
+});
+
+
+
+
 
