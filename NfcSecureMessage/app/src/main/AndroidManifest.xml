@@ -27,7 +27,8 @@
         <activity android:name=".CreatePasswordActivity" />
         <activity android:name=".EnterPasswordActivity" />
         <activity android:name=".ConversationActivity" />
-        <activity android:name=".GenerateKeyActivity"></activity>
+        <activity android:name=".GenerateKeyActivity" />
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>

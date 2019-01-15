@@ -26,4 +26,9 @@
     <string name="please_enter_your_name">Please enter your Name</string>
     <string name="example_john">Example: John</string>
     <string name="please_enter_a_password_to_encrypt_your_key">Please enter a password to encrypt your key</string>
+    <string name="logintxt">login</string>
+    <string name="passtxt">password</string>
+    <string name="validBtn">Connect</string>
+    <string name="registerBtn">Register</string>
+    <string name="nfc_secure_message">Nfc Secure Message</string>
 </resources>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="#abc"
+    android:layout_marginTop="25dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="25dp"
+    tools:context=".LoginActivity">
+
+<TextView
+    android:id="@+id/textView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="40sp"
+    android:textColor="#fff"
+    android:layout_marginTop="20dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginBottom="30dp"
+    android:text="@string/nfc_secure_message" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="#ccc"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="15dp">
+    <TextView
+        android:id="@+id/logintxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="@string/logintxt" />
+
+    <EditText
+        android:id="@+id/loginbox"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="#aaa"
+        android:inputType="textPersonName"/>
+
+    <TextView
+        android:id="@+id/passtxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="@string/passtxt" />
+
+    <EditText
+        android:id="@+id/passbox"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="#aaa"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/validBtn"
+        android:text="@string/validBtn"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"/>
+
+    <Button
+        android:id="@+id/registerBtn"
+        android:text="@string/registerBtn"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+
+</LinearLayout>
