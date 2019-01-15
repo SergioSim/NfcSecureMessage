@@ -77,79 +77,35 @@ exports.sendMessage = function(req,res){
 
 
 
+exports.createUser = function(req,res){
+
+        var data = {   
+            userLOGIN : req.login,
+            userPASSWORD : req.password,
+		   };		
+		   	
+	    	con.query("INSERT INTO GrailsUser.nfc_user  (login,password) VALUES (?,?)",[data.userLOGIN,data.userPASSWORD],function(err, result){
+				if (err) {
+					Response = {
+						succes: false,
+						msg :"utiisateur non ajouté" }
+				}
+				else{
+					Response = {
+						succes: true,
+						msg :"utilisateur ajouté ",
+						resultat: result }
+				}
+				res(Response);
+		  } 				
+
+	   );
+	}
 
 
 		
-	
-/*
-  
-			if(!err){
-				reponse = {
-					succes : true,
-					result: insertedId.ops[0]._id,
-					error : null,
-					msg: "Envoie de message reussi " + insertedId.ops[0]._id
-				};
-			} else {
-				reponse = {
-					succes : false,
-					error : err,
-					msg: "Problème à l'envoie de message"
-				};
-			}
-			res.reponse;
-		//	callback(reponse);
-		});
-	}
-*/
-/*
 
-exports.sendMessage = function(formData, callback) {
-	MongoClient.connect(url, function(err, client) {
-		var db = client.db(dbName);
 
-	    if(!err) {
-	
-            let toInsert = {
-                author : formData.receiver,
-                message : formData.message, 
-            };
-            
-			console.dir(JSON.stringify(toInsert));
-		    db.collection("message")
-		    .insert(toInsert, function(err, insertedId) {
-		    	let reponse;
-
-		    	console.log('++++'+insertedId)
-
-		        if(!err){
-		            reponse = {
-		                succes : true,
-		                result: insertedId.ops[0]._id,
-		                error : null,
-		                msg: "Envoie de message reussi " + insertedId.ops[0]._id
-		            };
-		        } else {
-		            reponse = {
-		                succes : false,
-		                error : err,
-		                msg: "Problème à l'envoie de message"
-		            };
-		        }
-		        callback(reponse);
-		    });
-		} else{
-			let reponse = reponse = {
-                    	succes: false,
-                        error : err,
-                        msg:"Problème lors de l'envoie, erreur de connexion."
-                    };
-            callback(reponse);
-		}
-	});
-}
-
-*/
 /*
 exports.createUser = function(formData, callback) {
 	MongoClient.connect(url, function(err, client) {
