@@ -1,0 +1,67 @@
+démarer le server avec 
+
+node server.js
+
+-------------------------------------------------------------------------
+
+http://localhost:8080/api/login
+
+données de test 
+
+{
+	"login":"nadir",
+	"password":"nadir"
+
+}     --> connexion bonne 
+
+ ou bien 
+{
+	"login":"sergion",
+	"password":"nadir"
+
+}     --> connexion refusé 
+
+
+------------------------------------------------------------------------------
+
+http://localhost:8080/api/connection         -> connexion a la base de données 
+
+
+------------------------------------------------------------------------------
+
+http://localhost:8080/api/fetchMessages
+ 
+
+DONNEES DE TEST 
+
+{
+	"userLOGIN":"nadir"
+
+}
+
+--------------------------------------------------------------------------------
+
+
+http://localhost:8080/api/sendMsg
+
+donnnes de test 
+
+{
+	"message"  : "aaaa" ,
+	"userLOGIN" : "nadir"
+}
+
+
+--------------------------------------------------------------------------------
+
+http://localhost:8080/api/createUser
+
+donnees de test 
+
+{
+	"login"  : "aaa" ,
+	"password" : "nadir"
+}
+
+
+
