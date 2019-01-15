@@ -14,9 +14,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import nfctools.Nfc;
+import nfctools.NfcActivity;
 import utils.Logging;
 
-public class GenerateKeyActivity extends AppCompatActivity implements Listener {
+public class GenerateKeyActivity extends NfcActivity {
 
     public static final String TAG = Logging.getTAG(GenerateKeyActivity.class);
 
@@ -25,39 +26,13 @@ public class GenerateKeyActivity extends AppCompatActivity implements Listener {
     EditText name;
     EditText password;
     Button btn;
-    private NFCWriteFragment mNfcWriteFragment;
     int cesarkey = 0;
-    boolean isDialogDisplayed = false;
-    private Nfc mNfc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_key);
         initViews();
-        initNFC();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mNfc.startListening(this, getClass());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mNfc.stopListening(this);
-    }
-
-    @Override
-    public void onDialogDisplayed() {
-        isDialogDisplayed = true;
-    }
-
-    @Override
-    public void onDialogDismissed() {
-        isDialogDisplayed = false;
     }
 
     private void initViews() {
@@ -73,10 +48,6 @@ public class GenerateKeyActivity extends AppCompatActivity implements Listener {
         if(checkInput()){
             showWriteFragment();
         }
-    }
-
-    private void initNFC(){
-        mNfc = new Nfc(this);
     }
 
     private boolean checkInput() {
@@ -109,14 +80,6 @@ public class GenerateKeyActivity extends AppCompatActivity implements Listener {
             return false;
         }
         return true;
-    }
-
-    private void showWriteFragment() {
-        mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
-        if (mNfcWriteFragment == null) {
-            mNfcWriteFragment = NFCWriteFragment.newInstance();
-        }
-        mNfcWriteFragment.show(getSupportFragmentManager(),NFCWriteFragment.TAG);
     }
 
     private void setButtonColor(int i){

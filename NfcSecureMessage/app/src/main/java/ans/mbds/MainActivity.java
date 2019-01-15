@@ -1,17 +1,16 @@
 package ans.mbds;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import nfctools.Nfc;
+import nfctools.NfcActivity;
 import utils.Logging;
 
-public class MainActivity extends AppCompatActivity implements Listener{
+public class MainActivity extends NfcActivity {
 
     public static final String TAG = Logging.getTAG(MainActivity.class);
 
@@ -19,18 +18,12 @@ public class MainActivity extends AppCompatActivity implements Listener{
     private Button mBtWrite;
     private Button mBtRead;
     private Button mBtGen;
-    private NFCWriteFragment mNfcWriteFragment;
-    private NFCReadFragment mNfcReadFragment;
-    private boolean isDialogDisplayed = false;
-    private boolean isWrite = false;
-    private Nfc mNfc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        initNFC();
     }
 
     private void initViews() {
@@ -43,53 +36,9 @@ public class MainActivity extends AppCompatActivity implements Listener{
         mBtGen.setOnClickListener(view -> goToGenPage());
     }
 
-    private void initNFC(){
-        mNfc = new Nfc(this);
-    }
-
-    private void showWriteFragment() {
-        isWrite = true;
-        mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
-        if (mNfcWriteFragment == null) {
-            mNfcWriteFragment = NFCWriteFragment.newInstance();
-        }
-        mNfcWriteFragment.show(getSupportFragmentManager(),NFCWriteFragment.TAG);
-    }
-
-    private void showReadFragment() {
-        mNfcReadFragment = (NFCReadFragment) getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
-        if (mNfcReadFragment == null) {
-            mNfcReadFragment = NFCReadFragment.newInstance();
-        }
-        mNfcReadFragment.show(getSupportFragmentManager(),NFCReadFragment.TAG);
-    }
-
     private void goToGenPage() {
         Intent intent = new Intent(this, GenerateKeyActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onDialogDisplayed() {
-        isDialogDisplayed = true;
-    }
-
-    @Override
-    public void onDialogDismissed() {
-        isDialogDisplayed = false;
-        isWrite = false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mNfc.startListening(this, getClass());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mNfc.stopListening(this);
     }
 
     @Override
@@ -101,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements Listener{
                 if (isWrite) {
                     String messageToWrite = mEtMessage.getText().toString();
                     mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
+                    if(mNfcWriteFragment != null)
                     mNfcWriteFragment.onNfcDetected(mNfc,messageToWrite);
                 } else {
                     mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);

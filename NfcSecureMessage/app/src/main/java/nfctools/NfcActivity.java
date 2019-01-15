@@ -9,11 +9,11 @@ import ans.mbds.NFCWriteFragment;
 
 public class NfcActivity extends AppCompatActivity implements Listener {
 
-    private Nfc mNfc;
-    private NFCWriteFragment mNfcWriteFragment;
-    private NFCReadFragment mNfcReadFragment;
-    private boolean isDialogDisplayed = false;
-    private boolean isWrite = false;
+    protected Nfc mNfc;
+    protected NFCWriteFragment mNfcWriteFragment;
+    protected NFCReadFragment mNfcReadFragment;
+    protected boolean isDialogDisplayed = false;
+    protected boolean isWrite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +28,33 @@ public class NfcActivity extends AppCompatActivity implements Listener {
     }
 
     @Override
-    public void onDialogDisplayed() {
-        isDialogDisplayed = true;
+    protected void onResume() {
+        super.onResume();
+        mNfc.startListening(this, getClass());
     }
 
     @Override
-    public void onDialogDismissed() {
-        isDialogDisplayed = false;
+    public void onDialogDisplayed() { isDialogDisplayed = true; }
+
+    @Override
+    public void onDialogDismissed() { isDialogDisplayed = false; }
+
+    protected void initNFC(){ mNfc = new Nfc(this); }
+
+    protected void showWriteFragment() {
+        isWrite = true;
+        mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
+        if (mNfcWriteFragment == null) {
+            mNfcWriteFragment = NFCWriteFragment.newInstance();
+        }
+        mNfcWriteFragment.show(getSupportFragmentManager(),NFCWriteFragment.TAG);
     }
 
-    private void initNFC(){
-        mNfc = new Nfc(this);
+    protected void showReadFragment() {
+        mNfcReadFragment = (NFCReadFragment) getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
+        if (mNfcReadFragment == null) {
+            mNfcReadFragment = NFCReadFragment.newInstance();
+        }
+        mNfcReadFragment.show(getSupportFragmentManager(),NFCReadFragment.TAG);
     }
 }
