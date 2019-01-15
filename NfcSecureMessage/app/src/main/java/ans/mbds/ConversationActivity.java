@@ -1,7 +1,6 @@
 package ans.mbds;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,23 +16,20 @@ import java.util.List;
 import cryptoTools.CryptoTool;
 import database.Database;
 import database.Message;
-import nfctools.Nfc;
+import nfctools.NfcActivity;
 import utils.Logging;
 
-public class ConversationActivity extends AppCompatActivity implements MessageCellAdapterListener, Listener{
+public class ConversationActivity extends NfcActivity implements MessageCellAdapterListener{
 
     public static final String TAG = Logging.getTAG(ConversationActivity.class);
 
     private List<Message> messageList = new ArrayList<>();
-    private RecyclerView recyclerView;
+    private RecyclerView recycleView;
     private String contact;
     private Database db;
     private MessageCellAdapter mcAdapter = null;
     private Button btn;
     private EditText text;
-    private NFCReadFragment mNfcReadFragment;
-    private boolean isDialogDisplayed = false;
-    private Nfc mNfc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +44,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
         db = Database.getIstance(this);
         initRecycleView();
         initViews();
-        initNFC();
     }
 
     private void initViews(){
@@ -58,14 +53,12 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
     }
 
     private void initRecycleView(){
-        updateMessageList();
-        mcAdapter = new MessageCellAdapter(this, messageList , this);
-        recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(mcAdapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recycleView = findViewById(R.id.recycler_view);
+        updateRecyleView();
+        recycleView.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setStackFromEnd(true);
-        recyclerView.setLayoutManager(llm);
+        recycleView.setLayoutManager(llm);
     }
 
     private void onClick() {
@@ -74,52 +67,23 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
     }
 
     @Override
-    public void onDialogDisplayed() {
-        isDialogDisplayed = true;
-    }
-
-    @Override
-    public void onDialogDismissed() {
-        isDialogDisplayed = false;
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        updateMessageList();
+        updateRecyleView();
+        recycleView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void updateRecyleView(){
+        messageList = db.getMessageByConversation(contact);
         Log.i(TAG, "onResume Called! size of messageList: " + messageList.size());
         mcAdapter = new MessageCellAdapter(this, messageList , this);
-        recyclerView.setAdapter(mcAdapter);
-        recyclerView.getAdapter().notifyDataSetChanged();
-        mNfc.startListening(this, getClass());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mNfc.stopListening(this);
-    }
-
-    private void initNFC(){
-        mNfc = new Nfc(this);
-    }
-
-    private void updateMessageList() {
-        messageList = db.getMessageByConversation(contact);
+        recycleView.setAdapter(mcAdapter);
     }
 
     private void saveMessage(String encryptedText){
         Message message = new Message("Me", contact, contact, encryptedText);
         db.addMessage(message);
         text.setText(null);
-    }
-
-    private void showReadFragment() {
-        mNfcReadFragment = (NFCReadFragment) getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
-        if (mNfcReadFragment == null) {
-            mNfcReadFragment = NFCReadFragment.newInstance();
-        }
-        mNfcReadFragment.show(getSupportFragmentManager(),NFCReadFragment.TAG);
     }
 
     @Override
@@ -139,20 +103,19 @@ public class ConversationActivity extends AppCompatActivity implements MessageCe
         if(mNfc.onNewIntent(intent)){
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             if (isDialogDisplayed) {
-                    mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
-                    String message = mNfcReadFragment.onNfcDetected(mNfc);
-                    String[] tagContent = message.split("\\|");
-                    if(tagContent.length == 2){
-                        String theText = text.getText().toString();
-                        try {
-                            theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
-                            saveMessage(theText);
-                        }catch (NumberFormatException nfe){
-                            Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
-                        }
-
+                mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
+                String message = mNfcReadFragment.onNfcDetected(mNfc);
+                String[] tagContent = message.split("\\|");
+                if(tagContent.length == 2){
+                    String theText = text.getText().toString();
+                    try {
+                        theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
+                        saveMessage(theText);
+                    }catch (NumberFormatException nfe){
+                        Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
+        }
     }
 }
