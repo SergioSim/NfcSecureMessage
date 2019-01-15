@@ -30,6 +30,8 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
     private MessageCellAdapter mcAdapter = null;
     private Button btn;
     private EditText text;
+    private boolean doDecrypt = false;
+    int idToDecrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,10 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
     @Override
     protected void onResume() {
         super.onResume();
-        updateRecyleView();
+        if(!doDecrypt){
+            updateRecyleView();
+        }
+        doDecrypt = false;
         recycleView.getAdapter().notifyDataSetChanged();
     }
 
@@ -89,6 +94,9 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
     @Override
     public void textClicked(Message message, MessageCellAdapter.MyViewHolder holder) {
         Log.i(TAG, "message clicked: " + message.getMessage() + " id:" + message.getId());
+        doDecrypt = true;
+        idToDecrypt = holder.getAdapterPosition();
+        showReadFragment();
     }
 
     @Override
@@ -107,12 +115,29 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
                 String message = mNfcReadFragment.onNfcDetected(mNfc);
                 String[] tagContent = message.split("\\|");
                 if(tagContent.length == 2){
-                    String theText = text.getText().toString();
-                    try {
-                        theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
-                        saveMessage(theText);
-                    }catch (NumberFormatException nfe){
-                        Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
+                    if(doDecrypt){
+                        try {
+                            Log.d(TAG, "id : "+ idToDecrypt);
+                            String theText = messageList.get(idToDecrypt).getMessage();
+                            theText = CryptoTool.decrypt(theText, Integer.parseInt(tagContent[1]));
+                            Message message1 = messageList.get(idToDecrypt);
+                            message1.setMessage(theText);
+                            messageList.set(idToDecrypt, message1);
+                            Log.d(TAG, messageList.get(idToDecrypt).toString());
+                            mcAdapter = new MessageCellAdapter(ConversationActivity.this, messageList , ConversationActivity.this);
+                            recycleView.setAdapter(mcAdapter);
+                            mcAdapter.notifyDataSetChanged();
+                        }catch (NumberFormatException nfe){
+                            Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        try {
+                            String theText = text.getText().toString();
+                            theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
+                            saveMessage(theText);
+                        }catch (NumberFormatException nfe){
+                            Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }

@@ -2,7 +2,6 @@ package ans.mbds;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import nfctools.Nfc;
 import nfctools.NfcActivity;
 import utils.Logging;
 
