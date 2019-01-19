@@ -35,4 +35,7 @@
     <string name="inscriptionBtn">Register</string>
     <string name="register_new_user">Register new user</string>
     <string name="confirmLc">confirm</string>
+    <string name="voidLogin">Login can\'t be empty!</string>
+    <string name="voidPass">Password can\'t be empty!</string>
+    <string name="successfulConnection">Connection Successful</string>
 </resources>
