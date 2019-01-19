@@ -1,6 +1,8 @@
 package ans.mbds;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -43,15 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         db = Database.getIstance(getApplicationContext());
         final Intent regIntent = new Intent(this, RegisterActivity.class);
         initViews(regIntent);
-        JSONObject cred = new JSONObject();
-        try {
-            cred.put("login","a");
-            cred.put("password", "a");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String message = cred.toString();
-        new PerformPostTask().execute(message);
     }
 
     public void initViews(Intent regIntent) {
@@ -71,18 +64,14 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     R.string.voidPass, Toast.LENGTH_SHORT).show();
         } else {
-            //TODO implement database check and service!
-            //if (checkUser(login.getText().toString(), password.getText().toString()) != -1) {
-            //for offline acces...
-            //Intent intent = new Intent(getApplicationContext(), CheckMessagesService.class);
-            //intent.putExtra("login",login.getText().toString());
-            //intent.putExtra("password", password.getText().toString());
-            //intent.putExtra("userID", db.readUserID(login.getText().toString()));
-            //stopService(intent);
-            //startService(intent);
-            String loginTxt = login.getText().toString();
-            String passTxt = password.getText().toString();
-            String message = "{ \"login\":\"" + loginTxt + "\", \"password\":\"" + passTxt + "\" }";
+            JSONObject cred = new JSONObject();
+            try {
+                cred.put("login", login.getText().toString());
+                cred.put("password", password.getText().toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String message = cred.toString();
             new PerformPostTask().execute(message);
         }
     }
@@ -100,25 +89,35 @@ public class LoginActivity extends AppCompatActivity {
             if (response == null) {
                 Toast.makeText(getApplicationContext(),
                         "Connection Error!", Toast.LENGTH_SHORT).show();
+                return;
             }
-            Gson gson = new Gson();
             JsonElement jelement = new JsonParser().parse(response);
             JsonObject jobject = jelement.getAsJsonObject();
             String succes = jobject.get("succes").getAsString();
-            String msg = jobject.get("msg").getAsString();
             Log.i(LoginActivity.TAG, "result: succes: " + succes);
-            Log.i(LoginActivity.TAG, "result: msg: " + msg);
             if(succes.equals("true")) {
                 setButtonColor(Color.GREEN);
+                String access_token = jobject.get("access_token").getAsString();
+                saveAccessToken(access_token);
                 final Intent main = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(main);
                 Toast.makeText(getApplicationContext(),
                         R.string.successfulConnection, Toast.LENGTH_SHORT).show();
             }else{
                 setButtonColor(Color.RED);
+                Toast.makeText(getApplicationContext(),
+                        R.string.wrongLoginOrPassword, Toast.LENGTH_SHORT).show();
             }
 
         }
+    }
+
+    private void saveAccessToken(String access_token) {
+        SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.access_token), access_token);
+        editor.commit();
+        Log.i(TAG, "the access_token is: " + access_token);
     }
 
     private void setButtonColor(int i){
