@@ -45,4 +45,13 @@ tools:context=".MainActivity">
     android:text="@string/generate_new_encrypted_nfc_tag"
     style="@style/Widget.AppCompat.Button.Colored"/>
 
+    <Button
+        android:id="@+id/btn_inbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_generateNfcTag"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:text="@string/read_inbox"
+        style="@style/Widget.AppCompat.Button.Colored"/>
+
 </RelativeLayout>

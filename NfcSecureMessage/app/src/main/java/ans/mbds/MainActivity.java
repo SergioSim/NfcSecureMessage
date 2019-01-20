@@ -18,6 +18,7 @@ public class MainActivity extends NfcActivity {
     private Button mBtWrite;
     private Button mBtRead;
     private Button mBtGen;
+    private Button mBtInbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,16 @@ public class MainActivity extends NfcActivity {
         mBtWrite = findViewById(R.id.btn_write);
         mBtRead = findViewById(R.id.btn_read);
         mBtGen = findViewById(R.id.btn_generateNfcTag);
+        mBtInbox = findViewById(R.id.btn_inbox);
         mBtWrite.setOnClickListener(view -> showWriteFragment());
         mBtRead.setOnClickListener(view -> showReadFragment());
         mBtGen.setOnClickListener(view -> goToGenPage());
+        mBtInbox.setOnClickListener(view -> goToInbox());
+    }
+
+    private void goToInbox() {
+        Intent intent = new Intent(this, InboxActivity.class);
+        startActivity(intent);
     }
 
     private void goToGenPage() {

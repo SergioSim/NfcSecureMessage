@@ -29,7 +29,8 @@
         <activity android:name=".ConversationActivity" />
         <activity android:name=".GenerateKeyActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".InboxActivity"></activity>
     </application>
 
 </manifest>
