@@ -3,8 +3,10 @@ package ans.mbds;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,16 +15,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import database.Message;
 import network.Address;
 import network.Server;
+import nfctools.NfcActivity;
 import utils.Logging;
 
-public class InboxActivity extends AppCompatActivity {
+public class InboxActivity extends NfcActivity implements MessageCellAdapterListener {
 
     public static final String TAG = Logging.getTAG(InboxActivity.class);
 
-    String login;
+    private String login;
+    private List<Message> messageList = new ArrayList<>();
+    private RecyclerView recycleView;
+    private MessageCellAdapter mcAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +39,36 @@ public class InboxActivity extends AppCompatActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         String loginAlias = getString(R.string.login_alias);
         login = sharedPref.getString(loginAlias, "");
+        initRecycleView();
+    }
+
+    private void initRecycleView() {
+        recycleView = findViewById(R.id.recycler_view_inbox);
+        updateRecyleView();
+        recycleView.setItemAnimator(new DefaultItemAnimator());
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recycleView.setLayoutManager(llm);
+    }
+
+    private void updateRecyleView(){
+        mcAdapter = new MessageCellAdapter(this, messageList , this);
+        recycleView.setAdapter(mcAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         new PerformGetTask().execute(login);
+    }
+
+    @Override
+    public void textClicked(Message message, MessageCellAdapter.MyViewHolder holder) {
+
+    }
+
+    @Override
+    public boolean longtextClicked(Message message, MessageCellAdapter.MyViewHolder holder) {
+        return false;
     }
 
     private class PerformGetTask extends AsyncTask<String, Integer, String> {
@@ -61,13 +93,18 @@ public class InboxActivity extends AppCompatActivity {
                         "No new Messages", Toast.LENGTH_SHORT).show();
                 return;
             }
-            ArrayList<String> messages = new ArrayList<>();
+
+            messageList = new ArrayList<>();
             for(int i = 0; i < jarray.size(); i++){
-                messages.add(jarray.get(i).getAsJsonObject().get("message").toString());
+                String str = jarray.get(i).getAsJsonObject().get("message").toString();
+                str = str.substring(1, str.length() - 1);
+                messageList.add(new Message("",login, "", str));
             }
-            for(String message : messages) {
-                Log.i(TAG, message);
+            for(Message message : messageList) {
+                Log.i(TAG, message.toString());
             }
+            updateRecyleView();
+            recycleView.getAdapter().notifyDataSetChanged();
         }
     }
 }
