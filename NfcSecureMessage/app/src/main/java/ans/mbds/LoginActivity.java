@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String response) {
-            if (response == null) {
+            if (response == null || response.equals("")) {
                 Toast.makeText(getApplicationContext(),
                         "Connection Error!", Toast.LENGTH_SHORT).show();
                 return;
