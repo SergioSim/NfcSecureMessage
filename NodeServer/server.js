@@ -1,40 +1,19 @@
-const express  = require('express');
-const app      = express();
-const port     = process.env.PORT || 8080;
-const server   = require('http').Server(app);
+const express  	= require('express');
+const http   	= require('http');
+const multer 	= require('multer'); // pour les formulaires multiparts
+const bodyParser= require('body-parser');
+const mysqlDB 	= require('./crud-mysql');
 
-// pour les formulaires multiparts
-var multer = require('multer');
-var multerData = multer();
-
-const mysqlDB = require('./crud-mysql');
-console.log("on off")
-// Pour les formulaires standards
-const bodyParser = require('body-parser');
-// pour les formulaires multiparts
-var multer = require('multer');
-var multerData = multer();
+var multerData 	= multer();
+const app      	= express();
+const server 	= http.Server(app);
+const port     	= process.env.PORT || 8083;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-// Lance le serveur avec express
-server.listen(port);
+server.listen(port); // Lance le serveur avec express
 
 console.log("Serveur lancé sur le port : " + port);
-
-
-var mysql = require('mysql');
-
-
-// connexion à la base distante
-
-var con = mysql.createConnection({
-  host: "82.255.166.104",
-  user: "GrailsUser",
-  password: "GrailsPassword13?"
-});
-
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -43,72 +22,26 @@ app.use(function (req, res, next) {
     next();
 });
 
-// Test de la connexion à la base
-app.get('/api/connection', function(req, res) {
-
-	con.connect(function(err) {
-		if (err) 
-		{ 
-			res.send(JSON.stringify("not conneccted"));
-		}
-		 else
-		{ 
-			res.send(JSON.stringify("YES, you have Connected! to mysql"));
-		}
+app.get('/api/fetchMessages', function(req, res) { 
+	mysqlDB.fetchMessages(req.query, function(data) {
+		res.send(JSON.stringify(data)); 
 	});
 });
-
-
-
-app.get('/api/fetchMessages', function(req, res) { 
-
-	con.query("SELECT * FROM GrailsUser.nfc_message WHERE userLOGIN = ?",[req.query.userLOGIN], function (err, result) {
-		if (err)
-		{
-			res.send(JSON.stringify("Erreur"));
-		}
-		else
-		{ 
-			res.send(JSON.stringify(result));
-		}
-	  });
-});
-
 
 app.post('/api/sendMsg', multerData.fields([]), function(req, res) {
-
-
 	mysqlDB.sendMessage(req.body, function(data) {
-
 		res.send(JSON.stringify(data)); 
-
 	});
-
 });
 
-
-
 app.post('/api/createUser', multerData.fields([]), function(req, res) {
-
 	mysqlDB.createUser(req.body, function(data) {
-
 		res.send(JSON.stringify(data)); 
-
 	});
-
 });
 
 app.post('/api/login', multerData.fields([]), function(req, res) {
-
 	mysqlDB.login(req.body, function(data) {
-
 		res.send(JSON.stringify(data)); 
-
 	});
-
 });
-
-
-
-
-

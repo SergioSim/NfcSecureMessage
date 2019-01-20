@@ -1,100 +1,36 @@
 const jwt = require('jsonwebtoken');
-var mysql = require('mysql');
+const mysql = require('mysql');
 
-var con = mysql.createConnection({
+const con = mysql.createConnection({
 	host: "82.255.166.104",
 	user: "GrailsUser",
-	password: "GrailsPassword13?"
-  });
+	password: "GrailsPassword13?"});
 
-exports.sendMessage = function(req,res){
-
-        var data = {   
-            userLOGIN : req.userLOGIN,
-            message : req.message,
-		   };		
-		   	
-	    	con.query("INSERT INTO GrailsUser.nfc_message  (message,userLOGIN) VALUES (?,?)",[data.message,data.userLOGIN],function(err, result){
-				if (err) {
-					console.log(result+"result")
-					console.log(err)
-					Response = {
-						succes: false,
-						msg :"message non envoyé" }
-				}
-				else{
-					Response = {
-						succes: true,
-						msg :"message envoyé avec succèes",
-						resultat: result }
-				}
-				res(Response);
-		  } 				
-
-	   );
-	}
-
-exports.createUser = function(req,res){
-
-        var data = {   
-            userLOGIN : req.login,
-            userPASSWORD : req.password,
-		   };		
-		   	
-	    	con.query("INSERT INTO GrailsUser.nfc_user  (login,password) VALUES (?,?)",[data.userLOGIN,data.userPASSWORD],function(err, result){
-				if (err) {
-					Response = {
-						succes: false,
-						msg :"utiisateur non ajouté" }
-				}
-				else{
-					Response = {
-						succes: true,
-						msg :"utilisateur ajouté ",
-						resultat: result }
-				}
-				res(Response);
-		  } 				
-
-	   );
-	}
-
-
-exports.login = function(req,res){
-
-        var data = {   
-            userLOGIN : req.login,
-            userPASSWORD : req.password,
-		   };		
-
-	    	con.query("SELECT * FROM GrailsUser.nfc_user WHERE login=? AND password=? ",[data.userLOGIN,data.userPASSWORD],function(err, result){
-
-				if (err) {
-							Response = {
-								succes: false,
-								msg :"erreur de connexion" }
-				        }
-					else{
-							if(result.length ==0){
-								Response = {
-									succes: false,
-									msg :"utiisateur non TROUVE" }
-							}
-							else {
-								let user={id:result.id}
-									Response = {
-										succes: true,
-										msg :"connexion reussi ",
-										resultat: result,
-										access_token:jwt.sign({user}, 'secretkey')
-									}
-						}
-					}
-				res(Response);
-		  } 				
-
-	);
+exports.createUser = function(data, calback) {	
+	con.query("INSERT INTO GrailsUser.nfc_user  (login,password) VALUES (?,?)", [data.login, data.password], function(err, result){
+		calback({ succes: !err});
+	});
 }
 
+exports.login = function(data, calback) {
+	con.query("SELECT * FROM GrailsUser.nfc_user WHERE login=? AND password=? ",[data.login, data.password], function(err, result){
+		Response = {
+			succes: !err && result.length != 0,
+			msg :result.length == 0 ? "utiisateur non TROUVE" : "connexion reussi",
+			access_token: !err ? jwt.sign({id:result.id}, 'secretkey') : ''}
+		calback(Response);
+	});
+}
 
+exports.sendMessage = function(data, calback) {
+	con.query("INSERT INTO GrailsUser.nfc_message  (message,userLOGIN) VALUES (?,?)",[data.message, data.userLOGIN], function(err, result){
+		calback({ succes: !err});
+	});
+}
 
+exports.fetchMessages = function(data, calback) {
+	con.query("SELECT * FROM GrailsUser.nfc_message WHERE userLOGIN = ?",[data.userLOGIN], function(err, result) {
+		if(err) result = "Error";
+		calback(result);
+	});
+}
