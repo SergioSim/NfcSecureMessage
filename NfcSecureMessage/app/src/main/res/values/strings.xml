@@ -40,4 +40,6 @@
     <string name="successfulConnection">Connection Successful</string>
     <string name="access_token" />
     <string name="wrongLoginOrPassword">Wrong Login or Password</string>
+    <string name="successfulRegister">Register successful</string>
+    <string name="loginAlreadyExists">this login already exists</string>
 </resources>

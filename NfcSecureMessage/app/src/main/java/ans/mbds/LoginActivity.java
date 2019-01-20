@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,10 +22,10 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import database.Database;
 import network.Address;
 import network.Server;
 import utils.Logging;
+import utils.PasswordCheck;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,13 +35,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private Button validBtn;
     private Button registerBtn;
-    private Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        db = Database.getIstance(getApplicationContext());
         final Intent regIntent = new Intent(this, RegisterActivity.class);
         initViews(regIntent);
     }
@@ -96,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
             String succes = jobject.get("succes").getAsString();
             Log.i(LoginActivity.TAG, "result: succes: " + succes);
             if(succes.equals("true")) {
-                setButtonColor(Color.GREEN);
+                PasswordCheck.setButtonColor(Color.GREEN, LoginActivity.this.validBtn);
                 String access_token = jobject.get("access_token").getAsString();
                 saveAccessToken(access_token);
                 final Intent main = new Intent(LoginActivity.this, MainActivity.class);
@@ -104,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),
                         R.string.successfulConnection, Toast.LENGTH_SHORT).show();
             }else{
-                setButtonColor(Color.RED);
+                PasswordCheck.setButtonColor(Color.RED, LoginActivity.this.validBtn);
                 Toast.makeText(getApplicationContext(),
                         R.string.wrongLoginOrPassword, Toast.LENGTH_SHORT).show();
             }
@@ -112,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void saveAccessToken(String access_token) {
+    public void saveAccessToken(String access_token) {
         SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.access_token), access_token);
@@ -120,14 +117,4 @@ public class LoginActivity extends AppCompatActivity {
         Log.i(TAG, "the access_token is: " + access_token);
     }
 
-    private void setButtonColor(int i){
-        validBtn.setBackgroundColor(i);
-        Timer timer = new Timer("ButtonTimer", true);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                LoginActivity.this.validBtn.setBackgroundColor(Color.LTGRAY);
-            }
-        }, 1000);
-    }
 }
