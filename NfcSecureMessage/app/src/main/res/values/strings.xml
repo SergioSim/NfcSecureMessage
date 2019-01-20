@@ -46,4 +46,6 @@
     <string name="success">Success</string>
     <string name="login_alias" />
     <string name="read_inbox">READ INBOX</string>
+    <string name="unable_to_fetch_messages">unable to fetch messages</string>
+    <string name="fetch_successful">fetch successful</string>
 </resources>

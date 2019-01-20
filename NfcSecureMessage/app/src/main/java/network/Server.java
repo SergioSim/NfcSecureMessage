@@ -2,9 +2,6 @@ package network;
 
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,12 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -43,7 +38,7 @@ public class Server {
         BufferedWriter writer = null;
         String response = "";
         try {
-            aHttpURLConnection = getHttpURLConnection(address);
+            aHttpURLConnection = getHttpURLConnection(address, null);
             aHttpURLConnection.setRequestMethod("POST");
             aHttpURLConnection.setRequestProperty("content-type", "application/json");
             aHttpURLConnection.setDoInput(true);
@@ -74,12 +69,12 @@ public class Server {
         return response;
     }
 
-    public String getRequest(Address address) {
+    public String getRequest(Address address, String login) {
         HttpURLConnection aHttpURLConnection = null;
         BufferedReader bufReader = null;
         InputStreamReader isReader = null;
         try {
-            aHttpURLConnection = getHttpURLConnection(address);
+            aHttpURLConnection = getHttpURLConnection(address, login);
             aHttpURLConnection.setRequestMethod("GET");
             InputStream inputStream = aHttpURLConnection.getInputStream();
             isReader = new InputStreamReader(inputStream);
@@ -107,8 +102,12 @@ public class Server {
         return null;
     }
 
-    private HttpURLConnection getHttpURLConnection(Address address) throws IOException {
+    private HttpURLConnection getHttpURLConnection(Address address, String login) throws IOException {
         URL aURL = new URL(SERVER + address.toString());
+        if(login != null){
+            aURL = new URL(SERVER + address.toString() + "?userLOGIN=" + login);
+        }
+        Log.i(TAG, "aUrl = " + aURL.toExternalForm());
         HttpURLConnection aHttpURLConnection = (HttpURLConnection) aURL.openConnection();
         aHttpURLConnection.setConnectTimeout(15000);
         aHttpURLConnection.setReadTimeout(15000);
