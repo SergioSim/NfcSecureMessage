@@ -79,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Server server = new Server();
             Log.i(LoginActivity.TAG, "sending: " + strings[0]);
-            return server.postRequest(Address.CREATEUSER, strings[0], true);
+            return server.postRequest(Address.CREATEUSER, strings[0]);
         }
 
         @Override
@@ -104,7 +104,6 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),
                         R.string.loginAlreadyExists, Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 }

@@ -42,4 +42,7 @@
     <string name="wrongLoginOrPassword">Wrong Login or Password</string>
     <string name="successfulRegister">Register successful</string>
     <string name="loginAlreadyExists">this login already exists</string>
+    <string name="message_not_send">message not send!</string>
+    <string name="success">Success</string>
+    <string name="login_alias" />
 </resources>

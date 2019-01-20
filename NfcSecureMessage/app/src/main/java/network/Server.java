@@ -2,6 +2,9 @@ package network;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,7 +36,7 @@ public class Server {
 
     //as this method performes blocking operations
     //it's called in a async task
-    public String postRequest(Address address, String message, boolean isFormated) {
+    public String postRequest(Address address, String message) {
         HttpURLConnection aHttpURLConnection = null;
         BufferedReader br = null;
         OutputStream os = null;
@@ -48,11 +51,7 @@ public class Server {
             os = aHttpURLConnection.getOutputStream();
             writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            if(isFormated) {
-                writer.write(message);
-            }else{
-                writer.write(formatMessage(message));
-            }
+            writer.write(message);
             writer.flush();
             int responseCode = aHttpURLConnection.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
@@ -73,14 +72,6 @@ public class Server {
         }
         Log.i(TAG, "response form server: " + response);
         return response;
-    }
-
-    private String formatMessage(String message) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        result.append(URLEncoder.encode("msg", "UTF-8"));
-        result.append("=");
-        result.append(URLEncoder.encode(message, "UTF-8"));
-        return result.toString();
     }
 
     public String getRequest(Address address) {

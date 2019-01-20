@@ -1,6 +1,8 @@
 package ans.mbds;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +23,6 @@ public class GenerateKeyActivity extends NfcActivity {
 
     EditText cesarCipherEdi;
     CheckBox cesarCheck;
-    EditText name;
     EditText password;
     Button btn;
     int cesarkey = 0;
@@ -36,7 +37,6 @@ public class GenerateKeyActivity extends NfcActivity {
     private void initViews() {
         cesarCipherEdi = findViewById(R.id.cesarcipherkey);
         cesarCheck = findViewById(R.id.checkCesar);
-        name = findViewById(R.id.genContactName);
         password = findViewById(R.id.genPassword);
         btn = findViewById(R.id.genButton);
         btn.setOnClickListener(v -> onClick());
@@ -67,11 +67,6 @@ public class GenerateKeyActivity extends NfcActivity {
             Toast.makeText(this, "Cesar Cipher can't be empty!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(name.getText().toString().equals("")){
-            setButtonColor(Color.RED);
-            Toast.makeText(this, "Name can't be empty!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
         if(password.getText().toString().equals("")){
             setButtonColor(Color.RED);
             Toast.makeText(this, "Password can't be empty!", Toast.LENGTH_SHORT).show();
@@ -97,7 +92,10 @@ public class GenerateKeyActivity extends NfcActivity {
         if(mNfc.onNewIntent(intent)){
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             if (isDialogDisplayed) {
-                String messageToWrite = name.getText().toString() + "|" + cesarkey;
+                SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+                String loginAlias = getString(R.string.login_alias);
+                String contactName = sharedPref.getString(loginAlias, "");
+                String messageToWrite = contactName + "|" + cesarkey;
                 Log.d(TAG, "writing message : "+ messageToWrite);
                 mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
                 mNfcWriteFragment.onNfcDetected(mNfc, messageToWrite);

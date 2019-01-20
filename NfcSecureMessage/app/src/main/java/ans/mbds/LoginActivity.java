@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Server server = new Server();
             Log.i(LoginActivity.TAG, "sending: " + strings[0]);
-            return server.postRequest(Address.LOGIN, strings[0], true);
+            return server.postRequest(Address.LOGIN, strings[0]);
         }
 
         @Override
@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPref = LoginActivity.this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.access_token), access_token);
+        editor.putString(getString(R.string.login_alias), login.getText().toString());
         editor.commit();
         Log.i(TAG, "the access_token is: " + access_token);
     }
