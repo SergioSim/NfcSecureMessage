@@ -48,5 +48,7 @@
     <string name="read_inbox">READ INBOX</string>
     <string name="unable_to_fetch_messages">unable to fetch messages</string>
     <string name="fetch_successful">fetch successful</string>
-    <string name="inboxMessageTxt">Here is your Inbox: \n-tag with your nfc tag to decrypt the messages \n-then select the messages that are readable</string>
+    <string name="inboxMessageTxt">Here is your Inbox: \n-click on Read button \n-tag with your nfc tag to decrypt the messages \n-then select the messages that are readable</string>
+    <string name="badKey">Bad Key!</string>
+    <string name="read_nfc">Read</string>
 </resources>

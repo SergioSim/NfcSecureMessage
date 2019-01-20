@@ -1,6 +1,7 @@
 package ans.mbds;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -17,6 +19,7 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 
+import cryptoTools.CryptoTool;
 import database.Message;
 import network.Address;
 import network.Server;
@@ -31,6 +34,8 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
     private List<Message> messageList = new ArrayList<>();
     private RecyclerView recycleView;
     private MessageCellAdapter mcAdapter = null;
+    private boolean doDecrypt = false;
+    Button readButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,8 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
         SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         String loginAlias = getString(R.string.login_alias);
         login = sharedPref.getString(loginAlias, "");
+        readButton = findViewById(R.id.readButton);
+        readButton.setOnClickListener(view -> showReadFragment());
         initRecycleView();
     }
 
@@ -53,12 +60,16 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
     private void updateRecyleView(){
         mcAdapter = new MessageCellAdapter(this, messageList , this);
         recycleView.setAdapter(mcAdapter);
+        recycleView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        new PerformGetTask().execute(login);
+        if(!doDecrypt){
+            new PerformGetTask().execute(login);
+        }
+        doDecrypt = false;
     }
 
     @Override
@@ -69,6 +80,32 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
     @Override
     public boolean longtextClicked(Message message, MessageCellAdapter.MyViewHolder holder) {
         return false;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "onNewIntent: "+intent.getAction());
+        if(mNfc.onNewIntent(intent) && isDialogDisplayed){
+            Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
+            mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
+            String message = mNfcReadFragment.onNfcDetected(mNfc);
+            String[] tagContent = message.split("\\|");
+            Log.d(TAG, "tagContent: "+tagContent[0] + " tagLength: " + tagContent.length);
+            if(tagContent.length == 2){
+                Log.d(TAG, "tagLength: "+tagContent[1]);
+                try {
+                    int key = Integer.parseInt(tagContent[1]);
+                    for(Message mess : messageList){
+                        mess.setMessage(CryptoTool.decrypt(mess.getMessage(), key));
+                    }
+                    doDecrypt = true;
+                    updateRecyleView();
+                }catch (NumberFormatException nfe) {
+                    Log.e(TAG, "NumberFormatException: " + nfe.getMessage());
+                    Toast.makeText(this, getString(R.string.badKey), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     private class PerformGetTask extends AsyncTask<String, Integer, String> {
@@ -104,7 +141,6 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
                 Log.i(TAG, message.toString());
             }
             updateRecyleView();
-            recycleView.getAdapter().notifyDataSetChanged();
         }
     }
 }

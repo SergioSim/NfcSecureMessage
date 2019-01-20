@@ -67,9 +67,7 @@ public class MainActivity extends NfcActivity {
                     Log.d(TAG, "tagContent: "+tagContent[0]);
                     Log.d(TAG, "tagLength: "+tagContent.length);
                     if(tagContent.length == 2){
-                        Intent conversationIntent = new Intent(this, ConversationActivity.class);
-                        conversationIntent.putExtra("contact", tagContent[0]);
-                        startActivity(conversationIntent);
+
                     }
                 }
             }

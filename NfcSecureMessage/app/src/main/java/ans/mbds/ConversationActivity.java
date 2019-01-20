@@ -1,7 +1,6 @@
 package ans.mbds;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -141,7 +140,7 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
                             recycleView.setAdapter(mcAdapter);
                             mcAdapter.notifyDataSetChanged();
                         }catch (NumberFormatException nfe){
-                            Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.badKey), Toast.LENGTH_SHORT).show();
                         }
                     }else{
                         try {
