@@ -1,6 +1,8 @@
 package ans.mbds;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,12 +12,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cryptoTools.CryptoTool;
 import database.Database;
 import database.Message;
+import network.Address;
+import network.Server;
 import nfctools.NfcActivity;
 import utils.Logging;
 
@@ -31,6 +42,7 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
     private Button btn;
     private EditText text;
     private boolean doDecrypt = false;
+    private String theText;
     int idToDecrypt;
 
     @Override
@@ -89,6 +101,7 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
         Message message = new Message("Me", contact, contact, encryptedText);
         db.addMessage(message);
         text.setText(null);
+        theText = null;
     }
 
     @Override
@@ -132,14 +145,53 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
                         }
                     }else{
                         try {
-                            String theText = text.getText().toString();
+                            theText = text.getText().toString();
                             theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
-                            saveMessage(theText);
+                            JSONObject cred = new JSONObject();
+                            try {
+                                cred.put("message", theText);
+                                cred.put("userLOGIN", contact);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            new PerformPostTask().execute(cred.toString());
                         }catch (NumberFormatException nfe){
                             Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
+            }
+        }
+    }
+
+
+    private class PerformPostTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            Server server = new Server();
+            Log.i(LoginActivity.TAG, "sending: " + strings[0]);
+            return server.postRequest(Address.SENDMSG, strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            if (response == null || response.equals("")) {
+                Toast.makeText(getApplicationContext(),
+                        "Connection Error!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            JsonElement jelement = new JsonParser().parse(response);
+            JsonObject jobject = jelement.getAsJsonObject();
+            String succes = jobject.get("succes").getAsString();
+            Log.i(LoginActivity.TAG, "result: succes: " + succes);
+            if (succes.equals("true")) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.success, Toast.LENGTH_SHORT).show();
+                saveMessage(theText);
+                onResume();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        R.string.message_not_send, Toast.LENGTH_SHORT).show();
             }
         }
     }

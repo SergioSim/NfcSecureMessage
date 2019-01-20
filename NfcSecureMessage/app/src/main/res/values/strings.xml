@@ -35,4 +35,15 @@
     <string name="inscriptionBtn">Register</string>
     <string name="register_new_user">Register new user</string>
     <string name="confirmLc">confirm</string>
+    <string name="voidLogin">Login can\'t be empty!</string>
+    <string name="voidPass">Password can\'t be empty!</string>
+    <string name="successfulConnection">Connection Successful</string>
+    <string name="access_token" />
+    <string name="wrongLoginOrPassword">Wrong Login or Password</string>
+    <string name="successfulRegister">Register successful</string>
+    <string name="loginAlreadyExists">this login already exists</string>
+    <string name="message_not_send">message not send!</string>
+    <string name="success">Success</string>
+    <string name="login_alias" />
+    <string name="read_inbox">READ INBOX</string>
 </resources>

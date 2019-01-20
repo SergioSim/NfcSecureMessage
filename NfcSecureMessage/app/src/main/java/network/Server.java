@@ -1,9 +1,9 @@
 package network;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -25,179 +26,114 @@ import utils.Logging;
 public class Server {
 
     private static final String TAG = Logging.getTAG(Server.class);
-    private static final String KEY_RESPONSE_TEXT = "KEY_RESPONSE_TEXT";
-    private static final int REQUEST_CODE_SHOW_RESPONSE_TEXT = 1;
+    private static final String SERVER = "http://82.255.166.104:8083/api/";
 
-    private URL url;
-    private HttpURLConnection client = null;
-    private static Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == REQUEST_CODE_SHOW_RESPONSE_TEXT) {
-                Bundle bundle = msg.getData();
-                if (bundle != null) {
-                    String responseText = bundle.getString(KEY_RESPONSE_TEXT);
-                    Log.i(TAG, "response Text: " + responseText);
-                }
-            }
-        }
-    };
+    public Server() {}
 
-    public Server(){ }
     //client.setRequestProperty("msg", message); //this is for the header...
     //client.setFixedLengthStreamingMode(outputPost.getBytes().length);
     //client.setChunkedStreamingMode(0);
 
-    public String  performPostCall(String message) {
-        // this is not good as it will block the main thread....
+    //as this method performes blocking operations
+    //it's called in a async task
+    public String postRequest(Address address, String message) {
+        HttpURLConnection aHttpURLConnection = null;
+        BufferedReader br = null;
+        OutputStream os = null;
+        BufferedWriter writer = null;
         String response = "";
         try {
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(
+            aHttpURLConnection = getHttpURLConnection(address);
+            aHttpURLConnection.setRequestMethod("POST");
+            aHttpURLConnection.setRequestProperty("content-type", "application/json");
+            aHttpURLConnection.setDoInput(true);
+            aHttpURLConnection.setDoOutput(true);
+            os = aHttpURLConnection.getOutputStream();
+            writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(message));
-
+            writer.write(message);
             writer.flush();
-            writer.close();
-            os.close();
-            int responseCode=conn.getResponseCode();
-
+            int responseCode = aHttpURLConnection.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
-                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line=br.readLine()) != null) {
-                    response+=line;
+                br = new BufferedReader(new InputStreamReader(aHttpURLConnection.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    response += line;
                 }
-            }
-            else {
-                response="";
-
+            } else {
+                response = "";
+                Log.i(TAG, "responseCode: " + responseCode);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i(TAG, "Exception: " + e.getMessage());
+        } finally {
+            closeStreams(aHttpURLConnection, null, br, os, writer);
         }
-
+        Log.i(TAG, "response form server: " + response);
         return response;
     }
 
-    private String getPostDataString(String message) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        result.append(URLEncoder.encode("msg", "UTF-8"));
-        result.append("=");
-        result.append(URLEncoder.encode(message, "UTF-8"));
-        return result.toString();
-    }
-
-
-    public void startSendHttpRequestThread(final String reqUrl)
-    {
-        // this one creates a thread for the request and passes the response to the
-        // handler which may dispatch it to the ui class...
-        //TODO refactor and ajust to make post requests...
-        Thread sendHttpRequestThread = new Thread()
-        {
-            @Override
-            public void run() {
-                // Maintain http url connection.
-                HttpURLConnection httpConn = null;
-
-                // Read text input stream.
-                InputStreamReader isReader = null;
-
-                // Read text into buffer.
-                BufferedReader bufReader = null;
-
-                // Save server response text.
-                StringBuffer readTextBuf = new StringBuffer();
-
-                try {
-                    // Create a URL object use page url.
-                    URL url = new URL(reqUrl);
-
-                    // Open http connection to web server.
-                    httpConn = (HttpURLConnection)url.openConnection();
-
-                    // Set http request method to get.
-                    httpConn.setRequestMethod("GET");
-
-                    // Set connection timeout and read timeout value.
-                    httpConn.setConnectTimeout(10000);
-                    httpConn.setReadTimeout(10000);
-
-                    // Get input stream from web url connection.
-                    InputStream inputStream = httpConn.getInputStream();
-
-                    // Create input stream reader based on url connection input stream.
-                    isReader = new InputStreamReader(inputStream);
-
-                    // Create buffered reader.
-                    bufReader = new BufferedReader(isReader);
-
-                    // Read line of text from server response.
-                    String line = bufReader.readLine();
-
-                    // Loop while return line is not null.
-                    while(line != null)
-                    {
-                        // Append the text to string buffer.
-                        readTextBuf.append(line);
-
-                        // Continue to read text line.
-                        line = bufReader.readLine();
-                    }
-
-                    // Send message to main thread to update response text in TextView after read all.
-                    Message message = new Message();
-
-                    // Set message type.
-                    message.what = REQUEST_CODE_SHOW_RESPONSE_TEXT;
-
-                    // Create a bundle object.
-                    Bundle bundle = new Bundle();
-                    // Put response text in the bundle with the special key.
-                    bundle.putString(KEY_RESPONSE_TEXT, readTextBuf.toString());
-                    // Set bundle data in message.
-                    message.setData(bundle);
-                    // Send message to main thread Handler to process.
-                    handler.sendMessage(message);
-                }catch(MalformedURLException ex)
-                {
-                    Log.e(TAG, "exception: " + ex.getMessage(), ex);
-                }catch(IOException ex)
-                {
-                    Log.e(TAG, "exception: " + ex.getMessage(), ex);
-                }finally {
-                    try {
-                        if (bufReader != null) {
-                            bufReader.close();
-                            bufReader = null;
-                        }
-
-                        if (isReader != null) {
-                            isReader.close();
-                            isReader = null;
-                        }
-
-                        if (httpConn != null) {
-                            httpConn.disconnect();
-                            httpConn = null;
-                        }
-                    }catch (IOException ex)
-                    {
-                        Log.e(TAG, "exception: " + ex.getMessage(), ex);
-                    }
-                }
+    public String getRequest(Address address) {
+        HttpURLConnection aHttpURLConnection = null;
+        BufferedReader bufReader = null;
+        InputStreamReader isReader = null;
+        try {
+            aHttpURLConnection = getHttpURLConnection(address);
+            aHttpURLConnection.setRequestMethod("GET");
+            InputStream inputStream = aHttpURLConnection.getInputStream();
+            isReader = new InputStreamReader(inputStream);
+            bufReader = new BufferedReader(isReader);
+            String line = bufReader.readLine();
+            StringBuffer readTextBuf = new StringBuffer();
+            while(line != null) {
+                readTextBuf.append(line);
+                line = bufReader.readLine();
             }
-        };
-        // Start the child thread to request web page.
-        sendHttpRequestThread.start();
+            Log.i(TAG, "response form server: " + readTextBuf.toString());
+            return readTextBuf.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.i(TAG, "MalformedURLException: " + e.getMessage());
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+            Log.i(TAG, "ProtocolException: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(TAG, "IOException: " + e.getMessage());
+        } finally {
+            closeStreams(aHttpURLConnection, isReader, bufReader, null, null);
+        }
+        return null;
     }
 
+    private HttpURLConnection getHttpURLConnection(Address address) throws IOException {
+        URL aURL = new URL(SERVER + address.toString());
+        HttpURLConnection aHttpURLConnection = (HttpURLConnection) aURL.openConnection();
+        aHttpURLConnection.setConnectTimeout(15000);
+        aHttpURLConnection.setReadTimeout(15000);
+        return aHttpURLConnection;
+    }
+
+    private void closeStreams(HttpURLConnection httpConn, InputStreamReader isReader , BufferedReader bufReader, OutputStream os , BufferedWriter writer){
+        try {
+            if (bufReader != null) {
+                bufReader.close();
+            }
+            if (isReader != null) {
+                isReader.close();
+            }
+            if (httpConn != null) {
+                httpConn.disconnect();
+            }
+            if (os != null) {
+                os.close();
+            }
+            if (writer != null) {
+                writer.close();
+            }
+        }catch (IOException ex) {
+            Log.wtf(TAG, "Very Bad exception: " + ex.getMessage(), ex);
+        }
+    }
 }
