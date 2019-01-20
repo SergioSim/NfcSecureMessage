@@ -1,8 +1,11 @@
 package ans.mbds;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,8 +21,11 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cryptoTools.CryptoTool;
+import database.Database;
 import database.Message;
 import network.Address;
 import network.Server;
@@ -31,6 +37,9 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
     public static final String TAG = Logging.getTAG(InboxActivity.class);
 
     private String login;
+    private String contact;
+    private int key;
+    private Database db;
     private List<Message> messageList = new ArrayList<>();
     private RecyclerView recycleView;
     private MessageCellAdapter mcAdapter = null;
@@ -43,6 +52,7 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
         setContentView(R.layout.activity_inbox);
         SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         String loginAlias = getString(R.string.login_alias);
+        db = Database.getIstance(this);
         login = sharedPref.getString(loginAlias, "");
         readButton = findViewById(R.id.readButton);
         readButton.setOnClickListener(view -> showReadFragment());
@@ -74,7 +84,31 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
 
     @Override
     public void textClicked(Message message, MessageCellAdapter.MyViewHolder holder) {
+        if(contact == null) return;
+        holder.itemView.setBackgroundColor(Color.YELLOW);
+        new AlertDialog.Builder(this)
+                .setTitle("Are you sure?")
+                .setMessage("Do you really want to mark message :\n\"" + message.getMessage() + "\"\n as readable with this key?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        message.setAuthor(contact);
+                        message.setConversation(contact);
+                        message.setMessage(CryptoTool.encrypt(message.getMessage(), key));
+                        db.addMessage(message);
+                        // TODO send message to server as read!
+                        onResume();
+                        Toast.makeText(InboxActivity.this, "message moved to conversation: " +  message.getConversation(), Toast.LENGTH_SHORT).show();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+        Timer timer = new Timer("move contact", true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            }
+        }, 1000);
     }
 
     @Override
@@ -92,9 +126,10 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
             String[] tagContent = message.split("\\|");
             Log.d(TAG, "tagContent: "+tagContent[0] + " tagLength: " + tagContent.length);
             if(tagContent.length == 2){
+                contact = tagContent[0];
                 Log.d(TAG, "tagLength: "+tagContent[1]);
                 try {
-                    int key = Integer.parseInt(tagContent[1]);
+                    key = Integer.parseInt(tagContent[1]);
                     for(Message mess : messageList){
                         mess.setMessage(CryptoTool.decrypt(mess.getMessage(), key));
                     }
