@@ -28,9 +28,18 @@ exports.sendMessage = function(data, calback) {
 	});
 }
 
+
+exports.deleteMessage = function(id, calback) {
+	con.query("DELETE FROM GrailsUser.nfc_message WHERE ID = ?",[id], function(err, result) {
+		calback({ succes: !err});
+	});	
+}
+
 exports.fetchMessages = function(data, calback) {
 	con.query("SELECT * FROM GrailsUser.nfc_message WHERE userLOGIN = ?",[data.userLOGIN], function(err, result) {
 		if(err) result = "Error";
 		calback(result);
 	});
 }
+
+

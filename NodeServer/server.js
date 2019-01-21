@@ -45,3 +45,10 @@ app.post('/api/login', multerData.fields([]), function(req, res) {
 		res.send(JSON.stringify(data)); 
 	});
 });
+
+app.delete('/api/Message/:id', multerData.fields([]), function(req, res) {
+	var id = req.params.id;
+	mysqlDB.deleteMessage(id, function(data) {
+		res.send(JSON.stringify(data)); 
+	});
+});
