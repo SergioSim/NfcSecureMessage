@@ -13,7 +13,8 @@ exports.createUser = function(data, calback) {
 }
 
 exports.login = function(data, calback) {
-	con.query("SELECT * FROM GrailsUser.nfc_user WHERE login=? AND password=? ",[data.login, data.password], function(err, result){
+	con.query("SELECT * FROM GrailsUser.nfc_user WHERE login=? AND password LIKE BINARY ? ",[data.login, data.password], function(err, result){
+		console.log(data.login + "= data.login  "  + result+ "= result.login    ")
 		Response = {
 			succes: !err && result.length != 0,
 			msg :result.length == 0 ? "utiisateur non TROUVE" : "connexion reussi",
