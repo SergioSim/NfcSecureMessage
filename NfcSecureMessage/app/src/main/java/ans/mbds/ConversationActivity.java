@@ -145,6 +145,7 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
                     }else{
                         try {
                             theText = text.getText().toString();
+                            if(theText.equals("") || theText == null) return;
                             theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
                             JSONObject cred = new JSONObject();
                             try {
