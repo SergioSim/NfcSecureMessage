@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
     private MessageCellAdapter mcAdapter = null;
     private boolean doDecrypt = false;
     Button readButton;
+    Message currentMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,17 +92,14 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
                 .setTitle("Are you sure?")
                 .setMessage("Do you really want to mark message :\n\"" + message.getMessage() + "\"\n as readable with this key?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        message.setAuthor(contact);
-                        message.setConversation(contact);
-                        message.setMessage(CryptoTool.encrypt(message.getMessage(), key));
-                        db.addMessage(message);
-                        // TODO send message to server as read!
-                        onResume();
-                        Toast.makeText(InboxActivity.this, "message moved to conversation: " +  message.getConversation(), Toast.LENGTH_SHORT).show();
-                    }})
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    message.setAuthor(contact);
+                    message.setConversation(contact);
+                    message.setMessage(CryptoTool.encrypt(message.getMessage(), key));
+                    db.addMessage(message);
+                    currentMessage = message;
+                    new PerformDeleteTask().execute(message.getId());
+                })
                 .setNegativeButton(android.R.string.no, null).show();
         Timer timer = new Timer("move contact", true);
         timer.schedule(new TimerTask() {
@@ -167,14 +166,50 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
             }
 
             messageList = new ArrayList<>();
+            int id;
+            String msg;
+            String date;
+
             for(int i = 0; i < jarray.size(); i++){
-                String str = jarray.get(i).getAsJsonObject().get("message").toString();
-                str = str.substring(1, str.length() - 1);
-                messageList.add(new Message("",login, "", str));
+                JsonObject jObject = jarray.get(i).getAsJsonObject();
+                id = jObject.get("ID").getAsInt();
+                msg = jObject.get("message").getAsString();
+                date = jObject.get("date").getAsString();
+                messageList.add(new Message(id, "",login, "", msg, date));
             }
             for(Message message : messageList) {
                 Log.i(TAG, message.toString());
             }
+            updateRecyleView();
+        }
+    }
+
+    private class PerformDeleteTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... ints) {
+            Server server = new Server();
+            Log.i(TAG, "sending: " + ints[0]);
+            return server.deleteRequest(Address.DELETEMSG, ints[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            if (response == null || response.equals("")) {
+                Toast.makeText(getApplicationContext(),
+                        "Connection Error!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            JsonElement jelement = new JsonParser().parse(response);
+            JsonObject jarray = jelement.getAsJsonObject();
+            if(jarray.size() == 0) {
+                Toast.makeText(getApplicationContext(),
+                        "Move unsuccessful", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(jarray.get("succes").getAsString().equals("true")){
+                Toast.makeText(InboxActivity.this, "message moved to conversation: " +  InboxActivity.this.currentMessage.getConversation(), Toast.LENGTH_SHORT).show();
+            }
+            onResume();
             updateRecyleView();
         }
     }

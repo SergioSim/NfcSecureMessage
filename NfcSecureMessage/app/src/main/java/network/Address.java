@@ -4,7 +4,8 @@ public enum Address {
     LOGIN("login"),
     CREATEUSER("createUser"),
     SENDMSG("sendMsg"),
-    ETCHMSG("fetchMessages");
+    ETCHMSG("fetchMessages"),
+    DELETEMSG("Message");
 
     private String address;
 

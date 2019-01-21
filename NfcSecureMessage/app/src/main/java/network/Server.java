@@ -102,6 +102,42 @@ public class Server {
         return null;
     }
 
+    public String deleteRequest(Address address, int id){
+        HttpURLConnection aHttpURLConnection = null;
+        BufferedReader bufReader = null;
+        InputStreamReader isReader = null;
+        try {
+            URL aURL = new URL(SERVER + address.toString() + "/" + id);
+            aHttpURLConnection = (HttpURLConnection) aURL.openConnection();
+            aHttpURLConnection.setConnectTimeout(15000);
+            aHttpURLConnection.setReadTimeout(15000);
+            aHttpURLConnection.setRequestMethod("DELETE");
+            InputStream inputStream = aHttpURLConnection.getInputStream();
+            isReader = new InputStreamReader(inputStream);
+            bufReader = new BufferedReader(isReader);
+            String line = bufReader.readLine();
+            StringBuffer readTextBuf = new StringBuffer();
+            while(line != null) {
+                readTextBuf.append(line);
+                line = bufReader.readLine();
+            }
+            Log.i(TAG, "response form server: " + readTextBuf.toString());
+            return readTextBuf.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.i(TAG, "MalformedURLException: " + e.getMessage());
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+            Log.i(TAG, "ProtocolException: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(TAG, "IOException: " + e.getMessage());
+        } finally {
+            closeStreams(aHttpURLConnection, isReader, bufReader, null, null);
+        }
+        return null;
+    }
+
     private HttpURLConnection getHttpURLConnection(Address address, String login) throws IOException {
         URL aURL = new URL(SERVER + address.toString());
         if(login != null){
