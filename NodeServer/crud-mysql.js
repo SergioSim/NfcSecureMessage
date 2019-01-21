@@ -16,7 +16,7 @@ exports.login = function(data, calback) {
 	con.query("SELECT * FROM GrailsUser.nfc_user WHERE login=? AND password=? ",[data.login, data.password], function(err, result){
 		Response = {
 			succes: !err && result.length != 0,
-			msg :result.length == 0 ? "utiisateur non TROUVE" : "connexion reussi",
+			msg : !err && result.length == 0 ? "utiisateur non TROUVE" : "connexion reussi",
 			access_token: !err ? jwt.sign({id:result.id}, 'secretkey') : ''}
 		calback(Response);
 	});
