@@ -30,7 +30,8 @@
         <activity android:name=".GenerateKeyActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".InboxActivity"></activity>
+        <activity android:name=".InboxActivity" />
+        <activity android:name=".AddKeyActivity"></activity>
     </application>
 
 </manifest>

@@ -43,6 +43,7 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
     private boolean doDecrypt = false;
     private String theText;
     int idToDecrypt;
+    private boolean isMymessage = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,7 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
         Log.i(TAG, "message clicked: " + message.getMessage() + " id:" + message.getId());
         doDecrypt = true;
         idToDecrypt = holder.getAdapterPosition();
+        isMymessage = message.getConversation().equals(message.getRecipient());
         showReadFragment();
     }
 
@@ -126,12 +128,13 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
                 mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
                 String message = mNfcReadFragment.onNfcDetected(mNfc);
                 String[] tagContent = message.split("\\|");
-                if(tagContent.length == 2){
+                if(tagContent.length == 3){
                     if(doDecrypt){
                         try {
                             Log.d(TAG, "id : "+ idToDecrypt);
                             String theText = messageList.get(idToDecrypt).getMessage();
-                            theText = CryptoTool.decrypt(theText, Integer.parseInt(tagContent[1]));
+                            int index = isMymessage ? 1 : 2;
+                            theText = CryptoTool.decrypt(theText, Integer.parseInt(tagContent[index]));
                             Message message1 = messageList.get(idToDecrypt);
                             message1.setMessage(theText);
                             messageList.set(idToDecrypt, message1);
@@ -163,7 +166,6 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
             }
         }
     }
-
 
     private class PerformPostTask extends AsyncTask<String, Integer, String> {
         @Override

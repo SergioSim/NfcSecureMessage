@@ -25,10 +25,6 @@ public class Server {
 
     public Server() {}
 
-    //client.setRequestProperty("msg", message); //this is for the header...
-    //client.setFixedLengthStreamingMode(outputPost.getBytes().length);
-    //client.setChunkedStreamingMode(0);
-
     //as this method performes blocking operations
     //it's called in a async task
     public String postRequest(Address address, String message) {

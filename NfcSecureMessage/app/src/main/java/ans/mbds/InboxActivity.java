@@ -2,7 +2,6 @@ package ans.mbds;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -124,11 +123,11 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
             String message = mNfcReadFragment.onNfcDetected(mNfc);
             String[] tagContent = message.split("\\|");
             Log.d(TAG, "tagContent: "+tagContent[0] + " tagLength: " + tagContent.length);
-            if(tagContent.length == 2){
+            if(tagContent.length == 3){
                 contact = tagContent[0];
-                Log.d(TAG, "tagLength: "+tagContent[1]);
+                Log.d(TAG, "tagLength: "+tagContent[2]);
                 try {
-                    key = Integer.parseInt(tagContent[1]);
+                    key = Integer.parseInt(tagContent[2]);
                     for(Message mess : messageList){
                         mess.setMessage(CryptoTool.decrypt(mess.getMessage(), key));
                     }

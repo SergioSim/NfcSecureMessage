@@ -51,4 +51,8 @@
     <string name="inboxMessageTxt">Here is your Inbox: \n-click on Read button \n-tag with your nfc tag to decrypt the messages \n-then select the messages that are readable</string>
     <string name="badKey">Bad Key!</string>
     <string name="read_nfc">Read</string>
+    <string name="part_2">Part 2</string>
+    <string name="please_tag">Please exchange your generated tag with your friends one\n then click on Read Friends Tag button and finally on the Finish button\nAfter success keep the friends tag for yourself, you will need it ...</string>
+    <string name="read_friend_tag">Read Friend tag</string>
+    <string name="finish">Finish</string>
 </resources>

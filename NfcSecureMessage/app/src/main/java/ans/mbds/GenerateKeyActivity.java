@@ -98,7 +98,13 @@ public class GenerateKeyActivity extends NfcActivity {
                 String messageToWrite = contactName + "|" + cesarkey;
                 Log.d(TAG, "writing message : "+ messageToWrite);
                 mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
-                mNfcWriteFragment.onNfcDetected(mNfc, messageToWrite);
+                if(mNfcWriteFragment.onNfcDetected(mNfc, messageToWrite)){
+                    Intent addKeyIntent = new Intent(this, AddKeyActivity.class);
+                    addKeyIntent.putExtra("cesarkey", cesarkey);
+                    addKeyIntent.putExtra("password", password.getText().toString());
+                    startActivity(addKeyIntent);
+                    finish();
+                }
             }
         }
     }

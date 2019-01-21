@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import nfctools.NfcActivity;
@@ -14,8 +13,6 @@ public class MainActivity extends NfcActivity {
 
     public static final String TAG = Logging.getTAG(MainActivity.class);
 
-    private EditText mEtMessage;
-    private Button mBtWrite;
     private Button mBtRead;
     private Button mBtGen;
     private Button mBtInbox;
@@ -28,12 +25,9 @@ public class MainActivity extends NfcActivity {
     }
 
     private void initViews() {
-        mEtMessage = findViewById(R.id.et_message);
-        mBtWrite = findViewById(R.id.btn_write);
         mBtRead = findViewById(R.id.btn_read);
         mBtGen = findViewById(R.id.btn_generateNfcTag);
         mBtInbox = findViewById(R.id.btn_inbox);
-        mBtWrite.setOnClickListener(view -> showWriteFragment());
         mBtRead.setOnClickListener(view -> showReadFragment());
         mBtGen.setOnClickListener(view -> goToGenPage());
         mBtInbox.setOnClickListener(view -> goToInbox());
@@ -55,21 +49,18 @@ public class MainActivity extends NfcActivity {
         if(mNfc.onNewIntent(intent)){
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             if (isDialogDisplayed) {
-                if (isWrite) {
-                    String messageToWrite = mEtMessage.getText().toString();
-                    mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
-                    if(mNfcWriteFragment != null)
-                    mNfcWriteFragment.onNfcDetected(mNfc,messageToWrite);
-                } else {
-                    mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
+                if (!isWrite) {
+                    mNfcReadFragment = (NFCReadFragment) getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
                     String message = mNfcReadFragment.onNfcDetected(mNfc);
                     String[] tagContent = message.split("\\|");
-                    Log.d(TAG, "tagContent: "+tagContent[0]);
-                    Log.d(TAG, "tagLength: "+tagContent.length);
-                    if(tagContent.length == 2){
+                    Log.d(TAG, "tagContent: " + tagContent[0]);
+                    Log.d(TAG, "tagLength: " + tagContent.length);
+                    if (tagContent.length == 3) {
                         Intent conversationIntent = new Intent(this, ConversationActivity.class);
                         conversationIntent.putExtra("contact", tagContent[0]);
                         startActivity(conversationIntent);
+                    }else{
+                        Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

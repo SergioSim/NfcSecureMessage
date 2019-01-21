@@ -52,18 +52,20 @@ public class NFCWriteFragment extends DialogFragment {
         mListener.onDialogDismissed();
     }
 
-    public void onNfcDetected(Nfc mNfc, String messageToWrite){
+    public boolean onNfcDetected(Nfc mNfc, String messageToWrite){
         mProgress.setVisibility(View.VISIBLE);
-        writeToNfc(mNfc,messageToWrite);
+        return writeToNfc(mNfc,messageToWrite);
     }
 
-    private void writeToNfc(Nfc mNfc, String message){
+    private boolean writeToNfc(Nfc mNfc, String message){
         mTvMessage.setText(getString(R.string.message_write_progress));
         if(mNfc.write(message)){
             mTvMessage.setText(getString(R.string.message_write_success));
-        }else{
-            mTvMessage.setText(getString(R.string.message_write_error));
+            mProgress.setVisibility(View.GONE);
+            return true;
         }
-        mProgress.setVisibility(View.GONE);
+
+        mTvMessage.setText(getString(R.string.message_write_error));
+        return false;
     }
 }
