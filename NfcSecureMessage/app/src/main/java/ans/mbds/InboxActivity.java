@@ -96,7 +96,7 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                     message.setAuthor(contact);
                     message.setConversation(contact);
-                    message.setMessage(CryptoTool.encrypt(message.getMessage(), key));
+                    message.setMessage(nfcTag.encryptWithTag(message.getMessage(), false));
                     db.addMessage(message);
                     currentMessage = message;
                     new PerformDeleteTask().execute(message.getId());
@@ -128,7 +128,7 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
                 contact = nfcTag.getContact();
                 Log.d(TAG, "got NfcTag: " + nfcTag.toString());
                     for(Message mess : messageList){
-                        mess.setMessage(nfcTag.decryptWithTag(mess.getMessage(),true));
+                        mess.setMessage(nfcTag.decryptWithTag(mess.getMessage(),false));
                     }
                     doDecrypt = true;
                     updateRecyleView();
