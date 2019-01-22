@@ -32,7 +32,7 @@ public class MainActivity extends NfcActivity {
         mBtRead.setOnClickListener(view -> showReadFragment());
         mBtGen.setOnClickListener(view -> goToGenPage());
         mBtInbox.setOnClickListener(view -> goToInbox());
-    }
+    };
 
     private void goToInbox() {
         Intent intent = new Intent(this, InboxActivity.class);

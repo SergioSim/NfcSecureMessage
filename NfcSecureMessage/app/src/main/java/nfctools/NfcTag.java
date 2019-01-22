@@ -263,6 +263,8 @@ public class NfcTag implements Parcelable {
     }
 
     public void append(NfcTag nfcTag){
+        contact = nfcTag.getContact();
+        halfPopulateDecryptedTag();
         secondHeader = nfcTag.getHeader();
         secondCesarKey = nfcTag.getCesarKey();
         secondVigenereKey = nfcTag.getVigenereKey();
