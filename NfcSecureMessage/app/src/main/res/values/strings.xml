@@ -52,6 +52,7 @@
     <string name="badKey">Bad Key!</string>
     <string name="read_nfc">Read</string>
     <string name="part_2">Part 2</string>
+    <string name="part_1">Part 1</string>
     <string name="please_tag">Please exchange your generated tag with your friends one\n then click on Read Friends Tag button and finally on the Finish button\nAfter success keep the friends tag for yourself, you will need it ...</string>
     <string name="read_friend_tag">Read Friend tag</string>
     <string name="finish">Finish</string>

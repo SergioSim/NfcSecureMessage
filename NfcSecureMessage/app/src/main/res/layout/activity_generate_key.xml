@@ -4,157 +4,163 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/colorAccent"
-        android:padding="20dp"
-        android:text="@string/encryption_mode_for_your_nfc_tag" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="@color/lineBreakColor"
-        android:layout_marginBottom="10dp"/>
-
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackgroundDark"
+        android:gravity="fill_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:padding="20dp"
+            android:text="@string/encryption_mode_for_your_nfc_tag"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/lineBreakColor" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/checkCesar"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="0dp"
-                android:gravity="center"
-                android:text="@string/cesar_cipher" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="38dp"
-                android:orientation="vertical">
-
-                <TextView
+                <CheckBox
+                    android:id="@+id/checkCesar"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/please_choose_a_integer_key"/>
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="0dp"
+                    android:gravity="center"
+                    android:text="@string/cesar_cipher" />
 
-                <EditText
-                    android:id="@+id/cesarcipherkey"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
-
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/checkVigenere"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="0dp"
-                android:gravity="center"
-                android:text="@string/Vigenere_cipher" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="38dp"
-                android:orientation="vertical">
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/please_choose_a_integer_key" />
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="38dp"
+                    android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/vinegerecipherkey"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/please_choose_a_integer_key" />
 
-            </LinearLayout>
-        </RelativeLayout>
+                    <EditText
+                        android:id="@+id/cesarcipherkey"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
 
-        <RelativeLayout
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkVigenere"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="0dp"
+                    android:gravity="center"
+                    android:text="@string/Vigenere_cipher" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="38dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/please_choose_a_integer_key" />
+
+                    <EditText
+                        android:id="@+id/vinegerecipherkey"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkAES"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="0dp"
+                    android:gravity="center"
+                    android:text="@string/AES_cipher" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/lineBreakColor" />
+
+        <TextView
+            android:id="@+id/enterPassTxv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:text="@string/please_enter_a_password_to_encrypt_your_key"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp" />
 
-            <CheckBox
-                android:id="@+id/checkAES"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="0dp"
-                android:gravity="center"
-                android:text="@string/AES_cipher" />
+        <EditText
+            android:id="@+id/genPassword"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_editext_register_login"
+            android:hint="@string/please_enter_a_password_to_encrypt_your_key"
+            android:inputType="textPassword" />
 
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="@color/lineBreakColor"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/enterPassTxv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/colorAccent"
-        android:text="@string/please_enter_a_password_to_encrypt_your_key" />
-
-    <EditText
-        android:id="@+id/genPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword" />
-
-    <Button
-        android:id="@+id/genButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/enter"
-        android:layout_gravity="bottom"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:background="@drawable/rounded_button_register"
-        />
+        <Button
+            android:id="@+id/genButton"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginVertical="20dp"
+            android:background="@drawable/rounded_button_register"
+            android:gravity="center_horizontal"
+            android:text="@string/enter" />
 
     </LinearLayout>
 </ScrollView>

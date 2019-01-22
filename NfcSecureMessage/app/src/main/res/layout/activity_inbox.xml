@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@android:color/holo_red_light"
+    android:background="@android:color/holo_orange_dark"
     android:orientation="vertical"
     android:weightSum="10">
 
@@ -11,13 +11,14 @@
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_weight="2"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:background="@color/colorPrimaryDark">>
 
             <Button
                 android:id="@+id/readButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/rounded_button_valid"
                 android:color="#9FE554"
                 android:layout_gravity="center_vertical"
                 android:textColor="@android:color/white"
@@ -35,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:gravity="fill_horizontal"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/colorBackground"
                     android:padding="10dp"
                     android:scrollbars="vertical"
                     android:textColor="@android:color/white"

@@ -1,89 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:background="@color/colorBackgroundLogin_register"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
 
-<TextView
-    android:id="@+id/textView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="30sp"
-    android:textColor="#fff"
-    android:layout_marginTop="20dp"
-    android:layout_marginStart="30dp"
-    android:layout_marginBottom="30dp"
-    android:text="@string/nfc_secure_message" />
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:background="#ccc"
-    android:layout_marginTop="15dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="15dp"
-    >
     <TextView
-        android:id="@+id/logintxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:text="@string/logintxt" />
-
-    <EditText
-        android:id="@+id/loginbox"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:inputType="textPersonName"
-        android:background="@drawable/rounded_editext_register_login"/>
-
-    <TextView
-        android:id="@+id/passtxt"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:text="@string/passtxt"
-        />
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/nfc_secure_message"
+        android:textColor="#fff"
+        android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/passbox"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:inputType="textPassword"
-        android:background="@drawable/rounded_editext_register_login"
-        />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorBackgroundDark"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/validBtn"
-        android:text="@string/validBtn"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/rounded_button_register"
-        />
 
-    <Button
-        android:id="@+id/registerBtn"
-        android:text="@string/registerBtn"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@drawable/rounded_button_register"
-        />
+        <EditText
+            android:id="@+id/loginbox"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginVertical="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/rounded_editext_register_login"
+            android:hint="  Login"
+            android:inputType="textPersonName" />
 
-</LinearLayout>
+
+        <EditText
+            android:id="@+id/passbox"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginVertical="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/rounded_editext_register_login"
+            android:hint="  Password"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/validBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/rounded_button_register"
+            android:text="@string/validBtn"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/registerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/rounded_button_register"
+            android:text="@string/registerBtn"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
 </LinearLayout>
