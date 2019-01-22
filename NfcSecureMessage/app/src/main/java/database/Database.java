@@ -4,11 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.Logging;
+
 public class Database {
+
+    private static final String TAG = Logging.getTAG(Database.class);
 
     private static Database idatabase;
     private final DatabaseHelper mDbHelper;
@@ -69,16 +74,15 @@ public class Database {
         db.insert(Message.TABLE_NAME, null, values);
     }
 
-    public int deleteMessage(String conversation, Message message){
+    public int deleteMessage(Message message){
             SQLiteDatabase db = mDbHelper.getWritableDatabase();
             String selection =
                     Message.COLUMN_NAME_ID + " LIKE '" + message.getId() + "' AND " +
                     Message.COLUMN_NAME_AUTHOR + " LIKE '" + message.getAuthor() + "' AND " +
                     Message.COLUMN_NAME_RECIPIENT + " LIKE '" + message.getRecipient() + "' AND " +
                     Message.COLUMN_NAME_CONVERSATION + " LIKE '" + message.getConversation() + "' AND " +
-                    Message.COLUMN_NAME_MESSSAGE + " LIKE '" + message.getConversation() + "' AND " +
+                    Message.COLUMN_NAME_MESSSAGE + " LIKE '" + message.getMessage() + "' AND " +
                     Message.COLUMN_NAME_DATE + " LIKE '" + message.getDate() + "'";
-
             return db.delete(Message.TABLE_NAME, selection,null);
     }
 
