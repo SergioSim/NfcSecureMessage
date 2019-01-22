@@ -1,10 +1,13 @@
 package nfctools;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -13,12 +16,13 @@ import javax.crypto.NoSuchPaddingException;
 import cryptoTools.AESPasswordKey;
 import utils.Logging;
 
-public class NfcTag {
+public class NfcTag implements Parcelable {
 
     public static final String TAG = Logging.getTAG(NfcTag.class);
 
     private boolean isPasswordEncrypted;
     private boolean isValid;
+    private boolean isHalfValid;
     private int[] header; //example [1,0,1] for cesar + aes encryption
     private int cesarKey;
     private int vigenereKey;
@@ -53,6 +57,7 @@ public class NfcTag {
         if(!processKeys(splitedTag[2], false)){
             isValid = false; return;
         }
+        isHalfValid = true;
         if(splitedTag.length != 5){
             isValid = false; return;
         }
@@ -63,6 +68,40 @@ public class NfcTag {
             isValid = false; return;
         }
     }
+
+    public NfcTag(){
+        isHalfValid =false;
+        isValid = false;
+    }
+
+    protected NfcTag(Parcel in) {
+        isPasswordEncrypted = in.readByte() != 0;
+        isValid = in.readByte() != 0;
+        isHalfValid = in.readByte() != 0;
+        header = in.createIntArray();
+        cesarKey = in.readInt();
+        vigenereKey = in.readInt();
+        aesKey = in.createByteArray();
+        contact = in.readString();
+        password = in.readString();
+        decryptedTag = in.readString();
+        secondHeader = in.createIntArray();
+        secondCesarKey = in.readInt();
+        secondVigenereKey = in.readInt();
+        secondAesKey = in.createByteArray();
+    }
+
+    public static final Creator<NfcTag> CREATOR = new Creator<NfcTag>() {
+        @Override
+        public NfcTag createFromParcel(Parcel in) {
+            return new NfcTag(in);
+        }
+
+        @Override
+        public NfcTag[] newArray(int size) {
+            return new NfcTag[size];
+        }
+    };
 
     private boolean processKeys(String keys, boolean isSecond) {
         int[] aHeader = isSecond ? secondHeader : header;
@@ -181,6 +220,34 @@ public class NfcTag {
         isValid = true; return isValid;
     }
 
+    public boolean halfValidate(){
+        if(header == null || contact == null || decryptedTag == null){
+            isHalfValid = false; return isHalfValid;
+        }
+        if(header.length != 3 || contact.equals("") || decryptedTag.equals("")){
+            isHalfValid = false; return isHalfValid;
+        }
+        if(header[Encryption.CESAR.ordinal()] == 1 && cesarKey == 0){
+            isHalfValid = false; return isHalfValid;
+        }
+        if(header[Encryption.VIGENERE.ordinal()] == 1 && vigenereKey == 0){
+            isHalfValid = false; return isHalfValid;
+        }
+        if(header[Encryption.AES.ordinal()] == 1 && aesKey == null){
+            isHalfValid = false; return isHalfValid;
+        }
+        String[] splitedTag = decryptedTag.split("\\|");
+        if(splitedTag.length < 3){
+            isHalfValid = false; return isHalfValid;
+        }
+        int sumOfHeader = header[0] + header[1] + header[2];
+        String[] splitedKeys = splitedTag[2].split(",");
+        if(splitedKeys.length != sumOfHeader) {
+            isHalfValid = false; return isHalfValid;
+        }
+        isHalfValid = true; return isHalfValid;
+    }
+
     public static String getTAG() {
         return TAG;
     }
@@ -255,5 +322,69 @@ public class NfcTag {
 
     public void setDecryptedTag(String decryptedTag) {
         this.decryptedTag = decryptedTag;
+    }
+
+    public void halfPopulateDecryptedTag() {
+        String response;
+        response = "0"; // firs char indicates that it's not encrypted
+        response += contact + "|"; //fill contact
+        response += header[0] + "," + header[1] + "," + header[2] + "|"; //fill header
+        int sumOfHeader = header[0] + header[1] + header[2];
+        if(header[Encryption.CESAR.ordinal()] == 1){
+            response += cesarKey;
+            if(sumOfHeader > 1) response += ",";
+        }
+        boolean isAes = header[Encryption.AES.ordinal()] == 1;
+        if(header[Encryption.VIGENERE.ordinal()] == 1){
+            response += vigenereKey;
+            if(isAes) response += ",";
+        }
+        if(isAes){
+            response += Base64.encodeToString(aesKey, Base64.DEFAULT);
+        }
+        decryptedTag = response;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isPasswordEncrypted ? 1 : 0));
+        dest.writeByte((byte) (isValid ? 1 : 0));
+        dest.writeByte((byte) (isHalfValid ? 1 : 0));
+        dest.writeIntArray(header);
+        dest.writeInt(cesarKey);
+        dest.writeInt(vigenereKey);
+        dest.writeByteArray(aesKey);
+        dest.writeString(contact);
+        dest.writeString(password);
+        dest.writeString(decryptedTag);
+        dest.writeIntArray(secondHeader);
+        dest.writeInt(secondCesarKey);
+        dest.writeInt(secondVigenereKey);
+        dest.writeByteArray(secondAesKey);
+    }
+
+    @Override
+    public String toString() {
+        return "NfcTag{" +
+                "isPasswordEncrypted=" + isPasswordEncrypted +
+                ", isValid=" + isValid +
+                ", isHalfValid=" + isHalfValid +
+                ", header=" + Arrays.toString(header) +
+                ", cesarKey=" + cesarKey +
+                ", vigenereKey=" + vigenereKey +
+                ", aesKey=" + Arrays.toString(aesKey) +
+                ", contact='" + contact + '\'' +
+                ", password='" + password + '\'' +
+                ", decryptedTag='" + decryptedTag + '\'' +
+                ", secondHeader=" + Arrays.toString(secondHeader) +
+                ", secondCesarKey=" + secondCesarKey +
+                ", secondVigenereKey=" + secondVigenereKey +
+                ", secondAesKey=" + Arrays.toString(secondAesKey) +
+                '}';
     }
 }

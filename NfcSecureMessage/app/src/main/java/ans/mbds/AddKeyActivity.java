@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import nfctools.NfcActivity;
+import nfctools.NfcTag;
 import utils.Logging;
 
 public class AddKeyActivity extends NfcActivity {
@@ -21,17 +22,20 @@ public class AddKeyActivity extends NfcActivity {
     private Button readBtn;
     private Button finishBtn;
 
+    private NfcTag nfcTag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_key);
-        password = getIntent().getStringExtra("password");
-        cesarkey = getIntent().getIntExtra("cesarkey", 0);
-        if(password == null || cesarkey == 0){
+        nfcTag = (NfcTag) getIntent().getParcelableExtra("nfcTag");
+        Log.i(TAG, "creating AddKeyActivity" + nfcTag.toString());
+        if(nfcTag == null){
             Toast.makeText(this, "Sorry somethink went wrong...", Toast.LENGTH_SHORT );
             finish();
             return;
         }
+        Log.i(TAG, nfcTag.toString());
         initViews();
     }
 

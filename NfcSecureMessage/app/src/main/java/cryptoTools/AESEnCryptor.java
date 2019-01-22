@@ -108,4 +108,8 @@ public class AESEnCryptor {
 
         return keyGenerator.generateKey();
     }
+
+    public static byte[] verySimpleGenerateKey() throws NoSuchAlgorithmException {
+        return KeyGenerator.getInstance("AES").generateKey().getEncoded();
+    }
 }
