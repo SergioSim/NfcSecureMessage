@@ -21,7 +21,7 @@ public class PasswordCheck {
         return false;
     }
 
-    public boolean isDifficult(String password, Context context, Button button){
+    public static boolean isDifficult(String password, Context context, Button button){
         if(password.length() < 8){
             badPassMessage("Password is not eight characters long.", context, button);
             return false;

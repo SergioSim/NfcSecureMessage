@@ -12,6 +12,14 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-20dp"
+        android:textSize="15sp"
+        android:textAlignment="center"
+        android:text="Click on Read Nfc Button to Start Conversation"/>
+
     <Button
         android:id="@+id/btn_read"
         style="@style/Widget.AppCompat.Button.Colored"
@@ -19,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:background="@drawable/rounded_button_valid"
-        android:text="@string/message_read_tag" />/>
+        android:text="@string/message_read_tag" />
 
     <Button
         android:id="@+id/btn_generateNfcTag"
@@ -40,5 +48,16 @@
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:background="@drawable/rounded_button_valid"
         android:text="@string/read_inbox" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/btn_inbox"
+        android:textSize="15sp"
+        android:textAlignment="center"
+        android:text="Click on READ INBOX to check for new messages"/>
+
+
 
 </RelativeLayout>

@@ -40,7 +40,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         String pass = password.getText().toString();
         String pass2 = password2.getText().toString();
         if(PasswordCheck.isValid(pass, pass2, this, button)){
-            if(true) { // TODO replace true with PasswordCheck.passCheck(pass)
+            if(PasswordCheck.isDifficult(pass, this, button)) {
                 if (AppPassword.create(pass)) {
                     PasswordCheck.setButtonColor(Color.GREEN, button);
                     byte[] encryptedPassword = AppPassword.getEncryptedText();
