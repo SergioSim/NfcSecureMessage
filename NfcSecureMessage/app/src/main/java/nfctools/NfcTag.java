@@ -40,31 +40,39 @@ public class NfcTag implements Parcelable {
         this.password = password;
         //First we check if the tag is not null;
         if(tagContent == null || tagContent.equals("")){
+            Log.e(TAG, "invalid tagContent");
             isValid = false; return;
         }
         //then we check if the tag is password encrypted
         if(!processPassword(tagContent, password)){
+            Log.e(TAG, "invalid password");
             isValid = false; return;
         }
         String[] splitedTag = decryptedTag.split("\\|");
         if(splitedTag.length < 3 ){
+            Log.e(TAG, "invalid splitedTag length");
             isValid = false; return;
         }
         contact = splitedTag[0];
         if(!processHeader(splitedTag[1], false)){
+            Log.e(TAG, "invalid header");
             isValid = false; return;
         }
         if(!processKeys(splitedTag[2], false)){
+            Log.e(TAG, "invalid Keys length");
             isValid = false; return;
         }
         isHalfValid = true;
         if(splitedTag.length != 5){
+            Log.e(TAG, "invalid second splitedTag length");
             isValid = false; return;
         }
         if(!processHeader(splitedTag[3], true)){
+            Log.e(TAG, "invalid second header");
             isValid = false; return;
         }
         if(!processKeys(splitedTag[4], true)){
+            Log.e(TAG, "invalid second Keys length");
             isValid = false; return;
         }
     }
@@ -110,7 +118,7 @@ public class NfcTag implements Parcelable {
         byte[] aAesKey = null;
         int sumOfHeader = aHeader[0] + aHeader[1] + aHeader[2];
         String[] splitedKeys = keys.split(",");
-        if(splitedKeys.length == sumOfHeader) return false;
+        if(splitedKeys.length != sumOfHeader) return false;
         try {
             int i = 0; int z = 0;
             for(String key : splitedKeys){
