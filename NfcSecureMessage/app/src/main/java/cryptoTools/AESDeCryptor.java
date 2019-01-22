@@ -1,6 +1,10 @@
 package cryptoTools;
 
+import android.util.Base64;
+import android.util.Log;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
@@ -8,6 +12,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.ECParameterSpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -15,6 +21,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import utils.Logging;
 
 /**
  _____        _____                  _
@@ -30,6 +39,10 @@ public class AESDeCryptor {
 
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
     private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    private static final String SIMPLETRANSFORMATION = "AES/ECB/PKCS7Padding";
+    private static final String VERYSIMPLETRANSFORMATION = "AES/ECB/PKCS5Padding";
+
+    public static final String TAG = Logging.getTAG(AESDeCryptor.class);
 
     private KeyStore keyStore;
 
@@ -54,6 +67,19 @@ public class AESDeCryptor {
         cipher.init(Cipher.DECRYPT_MODE, getSecretKey(alias), spec);
 
         return new String(cipher.doFinal(encryptedData), "UTF-8");
+    }
+
+    public static String simpleDecryptData(byte[] secretKey, String encryptedData)
+            throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+
+        Cipher cipher = null;
+        cipher = Cipher.getInstance(VERYSIMPLETRANSFORMATION);
+        SecretKey key = new SecretKeySpec(secretKey, 0, secretKey.length, VERYSIMPLETRANSFORMATION);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decode = Base64.decode(encryptedData, Base64.DEFAULT);
+        Log.i(TAG, "This is not a decoding problem...");
+        return new String(cipher.doFinal(decode), "UTF-8");
     }
 
     public SecretKey getSecretKey(final String alias) throws NoSuchAlgorithmException,

@@ -11,10 +11,16 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.CheckedInputStream;
 
+import cryptoTools.AESEnCryptor;
 import nfctools.NfcActivity;
+import nfctools.NfcTag;
 import utils.Logging;
 
 public class GenerateKeyActivity extends NfcActivity {
@@ -22,10 +28,16 @@ public class GenerateKeyActivity extends NfcActivity {
     public static final String TAG = Logging.getTAG(GenerateKeyActivity.class);
 
     EditText cesarCipherEdi;
+    EditText vigenereCipherEdi;
     CheckBox cesarCheck;
+    CheckBox vigenereCheck;
+    CheckBox aesCheck;
     EditText password;
     Button btn;
     int cesarkey = 0;
+    int vigenerekey = 0;
+
+    NfcTag nfcTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +48,10 @@ public class GenerateKeyActivity extends NfcActivity {
 
     private void initViews() {
         cesarCipherEdi = findViewById(R.id.cesarcipherkey);
+        vigenereCipherEdi = findViewById(R.id.vinegerecipherkey);
         cesarCheck = findViewById(R.id.checkCesar);
+        vigenereCheck = findViewById(R.id.checkVigenere);
+        aesCheck = findViewById(R.id.checkAES);
         password = findViewById(R.id.genPassword);
         btn = findViewById(R.id.genButton);
         btn.setOnClickListener(v -> onClick());
@@ -44,28 +59,76 @@ public class GenerateKeyActivity extends NfcActivity {
 
     private void onClick() {
         if(checkInput()){
-            showWriteFragment();
+            nfcTag = new NfcTag();
+            nfcTag.setPassword(password.getText().toString());
+            setContact();
+            setHeader();
+            Log.i(TAG, "status of nftTag: " + nfcTag.toString());
+            setKeys();
+            Log.i(TAG, "status of nftTag: " + nfcTag.toString());
+            nfcTag.halfPopulateDecryptedTag();
+            Log.i(TAG, "status of nftTag: " + (nfcTag.halfValidate() ? "Valid":"Invalid"));
+            if(nfcTag.halfValidate()){
+                showWriteFragment();
+            } else {
+                Toast.makeText(this, "Somethink went wrong...", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
+    private void setKeys() {
+        if(cesarCheck.isChecked()) nfcTag.setCesarKey(cesarkey);
+        if(vigenereCheck.isChecked()) nfcTag.setVigenereKey(vigenerekey);
+        if(aesCheck.isChecked()) nfcTag.setAesKey(generateAesKey());
+    }
+
+    private byte[] generateAesKey() {
+        try {
+            return AESEnCryptor.verySimpleGenerateKey();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Exception when generating AES KEY!!!");
+        }
+        return null;
+    }
+
+    private void setHeader() {
+        int cesarHeader = cesarCheck.isChecked() ? 1:0;
+        int vinegereHeader = vigenereCheck.isChecked() ? 1:0;
+        int aesHeader = aesCheck.isChecked() ? 1:0;
+        int[] aHeader = {cesarHeader, vinegereHeader, aesHeader};
+        nfcTag.setHeader(aHeader);
+    }
+
+    private void setContact() {
+        SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        String loginAlias = getString(R.string.login_alias);
+        String contactName = sharedPref.getString(loginAlias, "");
+        nfcTag.setContact(contactName);
+    }
+
     private boolean checkInput() {
-        if(!cesarCheck.isChecked()){
+        if(!cesarCheck.isChecked() && !vigenereCheck.isChecked() && !aesCheck.isChecked()){
             setButtonColor(Color.RED);
             Toast.makeText(this, "You have to check at least one encryption mode!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        try{
-            String value = cesarCipherEdi.getText().toString();
-            cesarkey = Integer.parseInt(value);
-            if(cesarkey == 0){
+        if(cesarCheck.isChecked() || vigenereCheck.isChecked()) {
+            try{
+                String cesarValue = cesarCipherEdi.getText().toString();
+                String vigenereValue = vigenereCipherEdi.getText().toString();
+                if(cesarCheck.isChecked()) cesarkey = Integer.parseInt(cesarValue);
+                if(vigenereCheck.isChecked()) vigenerekey = Integer.parseInt(vigenereValue);
+                if(cesarkey == 0){
+                    setButtonColor(Color.RED);
+                    Toast.makeText(this, "Cesar or Vigenere Cipher can't be 0!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }catch (NumberFormatException nfe){
                 setButtonColor(Color.RED);
-                Toast.makeText(this, "Cesar Cipher can't be 0!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cesar or Vigenere Cipher can't be empty!", Toast.LENGTH_SHORT).show();
                 return false;
             }
-        }catch (NumberFormatException nfe){
-            setButtonColor(Color.RED);
-            Toast.makeText(this, "Cesar Cipher can't be empty!", Toast.LENGTH_SHORT).show();
-            return false;
         }
         if(password.getText().toString().equals("")){
             setButtonColor(Color.RED);
@@ -92,16 +155,11 @@ public class GenerateKeyActivity extends NfcActivity {
         if(mNfc.onNewIntent(intent)){
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             if (isDialogDisplayed) {
-                SharedPreferences sharedPref = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-                String loginAlias = getString(R.string.login_alias);
-                String contactName = sharedPref.getString(loginAlias, "");
-                String messageToWrite = contactName + "|" + cesarkey;
-                Log.d(TAG, "writing message : "+ messageToWrite);
+                String messageToWrite = nfcTag.getDecryptedTag();
                 mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
                 if(mNfcWriteFragment.onNfcDetected(mNfc, messageToWrite)){
                     Intent addKeyIntent = new Intent(this, AddKeyActivity.class);
-                    addKeyIntent.putExtra("cesarkey", cesarkey);
-                    addKeyIntent.putExtra("password", password.getText().toString());
+                    addKeyIntent.putExtra("nfcTag", nfcTag);
                     startActivity(addKeyIntent);
                     finish();
                 }

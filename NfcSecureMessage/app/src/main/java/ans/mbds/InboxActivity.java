@@ -30,6 +30,7 @@ import database.Message;
 import network.Address;
 import network.Server;
 import nfctools.NfcActivity;
+import nfctools.NfcTag;
 import utils.Logging;
 
 public class InboxActivity extends NfcActivity implements MessageCellAdapterListener {
@@ -46,6 +47,7 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
     private boolean doDecrypt = false;
     Button readButton;
     Message currentMessage;
+    private NfcTag nfcTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +96,7 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                     message.setAuthor(contact);
                     message.setConversation(contact);
-                    message.setMessage(CryptoTool.encrypt(message.getMessage(), key));
+                    message.setMessage(nfcTag.encryptWithTag(message.getMessage(), false));
                     db.addMessage(message);
                     currentMessage = message;
                     new PerformDeleteTask().execute(message.getId());
@@ -121,22 +123,17 @@ public class InboxActivity extends NfcActivity implements MessageCellAdapterList
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
             String message = mNfcReadFragment.onNfcDetected(mNfc);
-            String[] tagContent = message.split("\\|");
-            Log.d(TAG, "tagContent: "+tagContent[0] + " tagLength: " + tagContent.length);
-            if(tagContent.length == 3){
-                contact = tagContent[0];
-                Log.d(TAG, "tagLength: "+tagContent[2]);
-                try {
-                    key = Integer.parseInt(tagContent[2]);
+            nfcTag = new NfcTag(message, null);
+            if(nfcTag.validate()){
+                contact = nfcTag.getContact();
+                Log.d(TAG, "got NfcTag: " + nfcTag.toString());
                     for(Message mess : messageList){
-                        mess.setMessage(CryptoTool.decrypt(mess.getMessage(), key));
+                        mess.setMessage(nfcTag.decryptWithTag(mess.getMessage(),false));
                     }
                     doDecrypt = true;
                     updateRecyleView();
-                }catch (NumberFormatException nfe) {
-                    Log.e(TAG, "NumberFormatException: " + nfe.getMessage());
-                    Toast.makeText(this, getString(R.string.badKey), Toast.LENGTH_SHORT).show();
-                }
+            }else{
+                Toast.makeText(this, getString(R.string.badKey), Toast.LENGTH_SHORT).show();
             }
         }
     }

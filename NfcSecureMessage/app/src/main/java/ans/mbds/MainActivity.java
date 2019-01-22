@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import nfctools.NfcActivity;
+import nfctools.NfcTag;
 import utils.Logging;
 
 public class MainActivity extends NfcActivity {
@@ -52,12 +53,10 @@ public class MainActivity extends NfcActivity {
                 if (!isWrite) {
                     mNfcReadFragment = (NFCReadFragment) getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
                     String message = mNfcReadFragment.onNfcDetected(mNfc);
-                    String[] tagContent = message.split("\\|");
-                    Log.d(TAG, "tagContent: " + tagContent[0]);
-                    Log.d(TAG, "tagLength: " + tagContent.length);
-                    if (tagContent.length == 3) {
+                    NfcTag nfcTag = new NfcTag(message, null);
+                    if (nfcTag.validate()) {
                         Intent conversationIntent = new Intent(this, ConversationActivity.class);
-                        conversationIntent.putExtra("contact", tagContent[0]);
+                        conversationIntent.putExtra("contact", nfcTag.getContact());
                         startActivity(conversationIntent);
                     }else{
                         Toast.makeText(this, "Bad Key!", Toast.LENGTH_SHORT).show();
