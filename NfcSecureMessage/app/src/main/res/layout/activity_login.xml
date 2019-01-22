@@ -5,21 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#abc"
-    android:layout_marginTop="25dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="25dp"
+    android:background="@color/colorBackgroundLogin_register"
     tools:context=".LoginActivity">
 
 <TextView
     android:id="@+id/textView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="40sp"
+    android:textSize="30sp"
     android:textColor="#fff"
     android:layout_marginTop="20dp"
-    android:layout_marginStart="10dp"
+    android:layout_marginStart="30dp"
     android:layout_marginBottom="30dp"
     android:text="@string/nfc_secure_message" />
 
@@ -32,7 +28,8 @@
     android:layout_marginTop="15dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginBottom="15dp">
+    android:layout_marginBottom="15dp"
+    >
     <TextView
         android:id="@+id/logintxt"
         android:layout_width="wrap_content"
@@ -46,15 +43,16 @@
         android:layout_height="40dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="#aaa"
-        android:inputType="textPersonName"/>
+        android:inputType="textPersonName"
+        android:background="@drawable/rounded_editext_register_login"/>
 
     <TextView
         android:id="@+id/passtxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25sp"
-        android:text="@string/passtxt" />
+        android:text="@string/passtxt"
+        />
 
     <EditText
         android:id="@+id/passbox"
@@ -62,23 +60,29 @@
         android:layout_height="40dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="#aaa"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:background="@drawable/rounded_editext_register_login"
+        />
 
     <Button
         android:id="@+id/validBtn"
         android:text="@string/validBtn"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_button_register"
+        />
 
     <Button
         android:id="@+id/registerBtn"
         android:text="@string/registerBtn"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_button_register"
+        />
 
 </LinearLayout>
 

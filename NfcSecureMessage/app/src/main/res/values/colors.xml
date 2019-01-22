@@ -5,6 +5,9 @@
     <color name="colorAccent">#D81B60</color>
     <color name="lineBreakColor">#c0c0c0</color>
     <color name="colorBackgroundButton">#0fddc2</color>
+    <color name="colorBackgroundLogin_Register">#aaa</color>
+    <color name="colorBackgroundLogin_register">#B15434</color>
+
 
 
 </resources>

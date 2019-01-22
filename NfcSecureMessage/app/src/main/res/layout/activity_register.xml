@@ -2,14 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="470dp"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#abc"
-    android:layout_marginTop="25dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="25dp"
+    android:background="@color/colorBackgroundLogin_register"
     tools:context=".RegisterActivity">
 
         <TextView
@@ -78,23 +74,23 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
+                android:inputType="textPassword"
                 android:background="@drawable/rounded_editext_register_login"
-                android:inputType="textPassword" />
+                />
 
             <Button
                 android:id="@+id/inscriptionBtn"
                 android:text="@string/inscriptionBtn"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:background="@drawable/rounded_button_register"
-
                 android:layout_margin="8dp"
                 android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/retourBtn"
                 android:text="@string/retourBtn"
-                android:textSize="20sp"
+                android:textSize="10sp"
                 android:layout_width="wrap_content"
                 android:background="@drawable/rounded_button_register"
                 android:layout_height="wrap_content" />

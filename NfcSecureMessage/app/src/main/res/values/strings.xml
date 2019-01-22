@@ -31,7 +31,7 @@
     <string name="validBtn">Connect</string>
     <string name="registerBtn">Register</string>
     <string name="nfc_secure_message">Nfc Secure Message</string>
-    <string name="retourBtn">Back</string>
+    <string name="retourBtn">Go to Login</string>
     <string name="inscriptionBtn">Register</string>
     <string name="register_new_user">Register new user</string>
     <string name="confirmLc">confirm</string>
