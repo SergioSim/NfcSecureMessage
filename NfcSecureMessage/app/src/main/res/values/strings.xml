@@ -55,4 +55,6 @@
     <string name="please_tag">Please exchange your generated tag with your friends one\n then click on Read Friends Tag button and finally on the Finish button\nAfter success keep the friends tag for yourself, you will need it ...</string>
     <string name="read_friend_tag">Read Friend tag</string>
     <string name="finish">Finish</string>
+    <string name="Vigenere_cipher">Vigenere Cipher</string>
+    <string name="AES_cipher">AES Cipher</string>
 </resources>

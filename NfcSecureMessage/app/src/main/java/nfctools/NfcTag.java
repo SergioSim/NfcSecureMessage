@@ -43,11 +43,17 @@ public class NfcTag {
             isValid = false; return;
         }
         String[] splitedTag = decryptedTag.split("\\|");
+        if(splitedTag.length < 3 ){
+            isValid = false; return;
+        }
         contact = splitedTag[0];
         if(!processHeader(splitedTag[1], false)){
             isValid = false; return;
         }
         if(!processKeys(splitedTag[2], false)){
+            isValid = false; return;
+        }
+        if(splitedTag.length != 5){
             isValid = false; return;
         }
         if(!processHeader(splitedTag[3], true)){
