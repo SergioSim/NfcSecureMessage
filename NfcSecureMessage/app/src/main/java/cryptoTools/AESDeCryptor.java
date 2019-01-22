@@ -74,8 +74,8 @@ public class AESDeCryptor {
             InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = null;
-        cipher = Cipher.getInstance(SIMPLETRANSFORMATION);
-        SecretKey key = new SecretKeySpec(secretKey, 0, secretKey.length, SIMPLETRANSFORMATION);
+        cipher = Cipher.getInstance(VERYSIMPLETRANSFORMATION);
+        SecretKey key = new SecretKeySpec(secretKey, 0, secretKey.length, VERYSIMPLETRANSFORMATION);
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decode = Base64.decode(encryptedData, Base64.DEFAULT);
         Log.i(TAG, "This is not a decoding problem...");

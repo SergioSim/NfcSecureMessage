@@ -63,7 +63,9 @@ public class GenerateKeyActivity extends NfcActivity {
             nfcTag.setPassword(password.getText().toString());
             setContact();
             setHeader();
+            Log.i(TAG, "status of nftTag: " + nfcTag.toString());
             setKeys();
+            Log.i(TAG, "status of nftTag: " + nfcTag.toString());
             nfcTag.halfPopulateDecryptedTag();
             Log.i(TAG, "status of nftTag: " + (nfcTag.halfValidate() ? "Valid":"Invalid"));
             if(nfcTag.halfValidate()){
@@ -85,6 +87,7 @@ public class GenerateKeyActivity extends NfcActivity {
             return AESEnCryptor.verySimpleGenerateKey();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            Log.e(TAG, "Exception when generating AES KEY!!!");
         }
         return null;
     }
@@ -114,7 +117,7 @@ public class GenerateKeyActivity extends NfcActivity {
             try{
                 String cesarValue = cesarCipherEdi.getText().toString();
                 String vigenereValue = vigenereCipherEdi.getText().toString();
-                if(cesarCheck.isChecked())cesarkey = Integer.parseInt(cesarValue);
+                if(cesarCheck.isChecked()) cesarkey = Integer.parseInt(cesarValue);
                 if(vigenereCheck.isChecked()) vigenerekey = Integer.parseInt(vigenereValue);
                 if(cesarkey == 0){
                     setButtonColor(Color.RED);

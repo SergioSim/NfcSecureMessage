@@ -78,7 +78,7 @@ public class AESEnCryptor {
 
         Cipher cipher = null;
         cipher = Cipher.getInstance(SIMPLETRANSFORMATION);
-        SecretKey key = new SecretKeySpec(secretKey, 0, secretKey.length, SIMPLETRANSFORMATION);
+        SecretKey key = new SecretKeySpec(secretKey, 0, secretKey.length, VERYSIMPLETRANSFORMATION);
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
         return Base64.encodeToString(cipherText, Base64.DEFAULT);
@@ -126,6 +126,6 @@ public class AESEnCryptor {
     }
 
     public static byte[] verySimpleGenerateKey() throws NoSuchAlgorithmException {
-        return KeyGenerator.getInstance(SIMPLETRANSFORMATION).generateKey().getEncoded();
+        return KeyGenerator.getInstance("AES").generateKey().getEncoded();
     }
 }
