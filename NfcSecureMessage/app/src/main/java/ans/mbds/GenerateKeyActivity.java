@@ -153,7 +153,6 @@ public class GenerateKeyActivity extends NfcActivity {
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             if (isDialogDisplayed) {
                 String messageToWrite = nfcTag.getDecryptedTag();
-                Log.d(TAG, "writing message : "+ messageToWrite);
                 mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
                 if(mNfcWriteFragment.onNfcDetected(mNfc, messageToWrite)){
                     Intent addKeyIntent = new Intent(this, AddKeyActivity.class);

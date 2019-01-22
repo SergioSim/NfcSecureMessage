@@ -23,6 +23,7 @@ public class AddKeyActivity extends NfcActivity {
     private Button finishBtn;
 
     private NfcTag nfcTag;
+    private NfcTag friendNfcTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,6 @@ public class AddKeyActivity extends NfcActivity {
             finish();
             return;
         }
-        Log.i(TAG, nfcTag.toString());
         initViews();
     }
 
@@ -71,22 +71,25 @@ public class AddKeyActivity extends NfcActivity {
             if (isDialogDisplayed) {
                 if(isWrite) {
                     mNfcWriteFragment = (NFCWriteFragment) getSupportFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
-                    if(mNfcWriteFragment.onNfcDetected(mNfc, oldTagContent + "|" + cesarkey)){
-                        Toast.makeText(this, "Written: " + oldTagContent + "|" + cesarkey, Toast.LENGTH_SHORT).show();
+                    if(mNfcWriteFragment.onNfcDetected(mNfc, nfcTag.getDecryptedTag())){
+                        Toast.makeText(this, "Written: " + nfcTag.getDecryptedTag(), Toast.LENGTH_SHORT).show();
                         finish();
                     }else{
-
+                        Toast.makeText(this, R.string.badKey, Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
                     oldTagContent = mNfcReadFragment.onNfcDetected(mNfc);
-                    if(oldTagContent != null && !oldTagContent.equals("") && oldTagContent.split("\\|").length == 2){
-                        //its a valid tag
+                    friendNfcTag = new NfcTag(oldTagContent, null);
+                    if(friendNfcTag.halfValidate()){
+                        Log.i(TAG, "Friend TAG Content: " + friendNfcTag.toString());
+                        nfcTag.append(friendNfcTag);
+                        Log.i(TAG, "My TAG Content: " + nfcTag.toString());
                         Toast.makeText(this, "Read: " + oldTagContent, Toast.LENGTH_SHORT).show();
                         isTagged = true;
                         readBtn.setBackgroundColor(Color.GREEN);
                         finishBtn.setBackgroundColor(Color.BLUE);
-                    }else {
+                    }else{
                         Toast.makeText(this, R.string.badKey, Toast.LENGTH_SHORT).show();
                     }
                 }

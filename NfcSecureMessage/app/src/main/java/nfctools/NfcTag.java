@@ -256,6 +256,43 @@ public class NfcTag implements Parcelable {
         isHalfValid = true; return isHalfValid;
     }
 
+    public void append(NfcTag nfcTag){
+        secondHeader = nfcTag.getHeader();
+        secondCesarKey = nfcTag.getCesarKey();
+        secondVigenereKey = nfcTag.getVigenereKey();
+        secondAesKey = nfcTag.getAesKey();
+        secondHalfPopulateDecryptedTag();
+    }
+
+    public void halfPopulateDecryptedTag() {
+        decryptedTag = "0"; // firs char indicates that it's not encrypted
+        decryptedTag += contact; //fill contact
+        populateHeaderAndKeys(false);
+    }
+
+    private void secondHalfPopulateDecryptedTag() {
+        populateHeaderAndKeys(true);
+    }
+
+    public void populateHeaderAndKeys(boolean isSecond){
+        String response = "";
+        int[] aHeader = isSecond ? secondHeader : header;
+        response += "|" + aHeader[0] + "," + aHeader[1] + "," + aHeader[2] + "|"; //fill header
+        int sumOfHeader = aHeader[0] + aHeader[1] + aHeader[2];
+        if(aHeader[Encryption.CESAR.ordinal()] == 1){
+            response += isSecond ? secondCesarKey : cesarKey;
+            if(sumOfHeader > 1) response += ",";
+        }
+        boolean isAes = aHeader[Encryption.AES.ordinal()] == 1;
+        if(aHeader[Encryption.VIGENERE.ordinal()] == 1){
+            response += isSecond ? secondVigenereKey : vigenereKey;
+            if(isAes) response += ",";
+        }
+        if(isAes){
+            response += Base64.encodeToString(isSecond ? secondAesKey : aesKey, Base64.DEFAULT);
+        }
+        decryptedTag += response;
+    }
     public static String getTAG() {
         return TAG;
     }
@@ -330,27 +367,6 @@ public class NfcTag implements Parcelable {
 
     public void setDecryptedTag(String decryptedTag) {
         this.decryptedTag = decryptedTag;
-    }
-
-    public void halfPopulateDecryptedTag() {
-        String response;
-        response = "0"; // firs char indicates that it's not encrypted
-        response += contact + "|"; //fill contact
-        response += header[0] + "," + header[1] + "," + header[2] + "|"; //fill header
-        int sumOfHeader = header[0] + header[1] + header[2];
-        if(header[Encryption.CESAR.ordinal()] == 1){
-            response += cesarKey;
-            if(sumOfHeader > 1) response += ",";
-        }
-        boolean isAes = header[Encryption.AES.ordinal()] == 1;
-        if(header[Encryption.VIGENERE.ordinal()] == 1){
-            response += vigenereKey;
-            if(isAes) response += ",";
-        }
-        if(isAes){
-            response += Base64.encodeToString(aesKey, Base64.DEFAULT);
-        }
-        decryptedTag = response;
     }
 
     @Override
