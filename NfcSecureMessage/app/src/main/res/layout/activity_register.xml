@@ -46,7 +46,7 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:background="#aaa"
+                android:background="@drawable/rounded_editext_register_login"
                 android:inputType="textPersonName"/>
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:background="#aaa"
+                android:background="@drawable/rounded_editext_register_login"
                 android:inputType="textPassword"/>
 
             <TextView
@@ -78,7 +78,7 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:background="#aaa"
+                android:background="@drawable/rounded_editext_register_login"
                 android:inputType="textPassword" />
 
             <Button
@@ -86,6 +86,9 @@
                 android:text="@string/inscriptionBtn"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
+                android:background="@drawable/rounded_button_register"
+
+                android:layout_margin="8dp"
                 android:layout_height="wrap_content" />
 
             <Button
@@ -93,6 +96,7 @@
                 android:text="@string/retourBtn"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
+                android:background="@drawable/rounded_button_register"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 </LinearLayout>
