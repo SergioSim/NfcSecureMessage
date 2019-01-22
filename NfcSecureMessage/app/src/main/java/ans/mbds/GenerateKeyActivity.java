@@ -114,8 +114,8 @@ public class GenerateKeyActivity extends NfcActivity {
             try{
                 String cesarValue = cesarCipherEdi.getText().toString();
                 String vigenereValue = vigenereCipherEdi.getText().toString();
-                cesarkey = Integer.parseInt(cesarValue);
-                vigenerekey = Integer.parseInt(vigenereValue);
+                if(cesarCheck.isChecked())cesarkey = Integer.parseInt(cesarValue);
+                if(vigenereCheck.isChecked()) vigenerekey = Integer.parseInt(vigenereValue);
                 if(cesarkey == 0){
                     setButtonColor(Color.RED);
                     Toast.makeText(this, "Cesar or Vigenere Cipher can't be 0!", Toast.LENGTH_SHORT).show();

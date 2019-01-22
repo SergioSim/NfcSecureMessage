@@ -3,8 +3,10 @@ package cryptoTools;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
+import android.util.Base64;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +18,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import utils.Logging;
 
@@ -34,6 +37,7 @@ public class AESEnCryptor {
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
     private static final String SIMPLETRANSFORMATION = "AES/ECB/PKCS7Padding";
     private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    private static final String VERYSIMPLETRANSFORMATION = "AES/ECB/PKCS5Padding";
     public static final String TAG = Logging.getTAG(AESEnCryptor.class);
 
     private byte[] encryption;
@@ -66,6 +70,18 @@ public class AESEnCryptor {
         iv = cipher.getIV();
 
         return (encryption = cipher.doFinal(textToEncrypt.getBytes("UTF-8")));
+    }
+
+    public static String verySimpleEncryptData(byte[] secretKey, String message)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
+
+        Cipher cipher = null;
+        cipher = Cipher.getInstance(SIMPLETRANSFORMATION);
+        SecretKey key = new SecretKeySpec(secretKey, 0, secretKey.length, SIMPLETRANSFORMATION);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
+        return Base64.encodeToString(cipherText, Base64.DEFAULT);
     }
 
     @NonNull
@@ -110,6 +126,6 @@ public class AESEnCryptor {
     }
 
     public static byte[] verySimpleGenerateKey() throws NoSuchAlgorithmException {
-        return KeyGenerator.getInstance("AES").generateKey().getEncoded();
+        return KeyGenerator.getInstance(SIMPLETRANSFORMATION).generateKey().getEncoded();
     }
 }

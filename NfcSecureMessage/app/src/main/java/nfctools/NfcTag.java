@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -12,8 +13,13 @@ import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
+import cryptoTools.AESDeCryptor;
+import cryptoTools.AESEnCryptor;
 import cryptoTools.AESPasswordKey;
+import cryptoTools.CryptoTool;
 import utils.Logging;
 
 public class NfcTag implements Parcelable {
@@ -293,6 +299,46 @@ public class NfcTag implements Parcelable {
         }
         decryptedTag += response;
     }
+
+    public String encryptWithTag(String message, boolean isSecond){
+        int[] head = isSecond ? secondHeader : header;
+        if(head[Encryption.CESAR.ordinal()] == 1){
+            message = CryptoTool.encrypt(message, isSecond ? secondCesarKey : cesarKey);
+        }
+        if(head[Encryption.VIGENERE.ordinal()] == 1){
+            //message = CryptoTool.encrypt(message, isSecond ? secondCesarKey : cesarKey);
+        }
+        if(head[Encryption.AES.ordinal()] == 1){
+            byte[] theKey = isSecond ? secondAesKey : aesKey;
+            try {
+                message = AESEnCryptor.verySimpleEncryptData(theKey, message);
+            } catch (NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException | NoSuchPaddingException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Exception while encrypting: " + e.getMessage());
+            }
+        }
+        return message;
+    }
+
+    public String decryptWithTag(String encryptedMessage, boolean isSecond){
+        int[] head = isSecond ? secondHeader : header;
+        if(head[Encryption.AES.ordinal()] == 1){
+            byte[] theKey = isSecond ? secondAesKey : aesKey;
+            try {
+                encryptedMessage = AESDeCryptor.simpleDecryptData(theKey, encryptedMessage);
+            } catch (UnsupportedEncodingException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Exception while decrypting: " + e.getMessage());
+            }
+        }
+        if(head[Encryption.VIGENERE.ordinal()] == 1){
+            //message = CryptoTool.encrypt(message, isSecond ? secondCesarKey : cesarKey);
+        }
+        if(head[Encryption.CESAR.ordinal()] == 1){
+            encryptedMessage = CryptoTool.decrypt(encryptedMessage, isSecond ? secondCesarKey : cesarKey);
+        }
+        return encryptedMessage;
+    }
     public static String getTAG() {
         return TAG;
     }
@@ -367,6 +413,46 @@ public class NfcTag implements Parcelable {
 
     public void setDecryptedTag(String decryptedTag) {
         this.decryptedTag = decryptedTag;
+    }
+
+    public boolean isHalfValid() {
+        return isHalfValid;
+    }
+
+    public void setHalfValid(boolean halfValid) {
+        isHalfValid = halfValid;
+    }
+
+    public int[] getSecondHeader() {
+        return secondHeader;
+    }
+
+    public void setSecondHeader(int[] secondHeader) {
+        this.secondHeader = secondHeader;
+    }
+
+    public int getSecondCesarKey() {
+        return secondCesarKey;
+    }
+
+    public void setSecondCesarKey(int secondCesarKey) {
+        this.secondCesarKey = secondCesarKey;
+    }
+
+    public int getSecondVigenereKey() {
+        return secondVigenereKey;
+    }
+
+    public void setSecondVigenereKey(int secondVigenereKey) {
+        this.secondVigenereKey = secondVigenereKey;
+    }
+
+    public byte[] getSecondAesKey() {
+        return secondAesKey;
+    }
+
+    public void setSecondAesKey(byte[] secondAesKey) {
+        this.secondAesKey = secondAesKey;
     }
 
     @Override

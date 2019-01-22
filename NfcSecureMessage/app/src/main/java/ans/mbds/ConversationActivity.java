@@ -22,12 +22,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import cryptoTools.CryptoTool;
 import database.Database;
 import database.Message;
 import network.Address;
 import network.Server;
 import nfctools.NfcActivity;
+import nfctools.NfcTag;
 import utils.Logging;
 
 public class ConversationActivity extends NfcActivity implements MessageCellAdapterListener{
@@ -138,14 +138,15 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
             if (isDialogDisplayed) {
                 mNfcReadFragment = (NFCReadFragment)getSupportFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
                 String message = mNfcReadFragment.onNfcDetected(mNfc);
-                String[] tagContent = message.split("\\|");
-                if(tagContent.length == 3){
+                NfcTag nfcTag = new NfcTag(message, null);
+                if(nfcTag.validate()){
                     if(doDecrypt){
                         try {
                             Log.d(TAG, "id : "+ idToDecrypt);
                             String theText = messageList.get(idToDecrypt).getMessage();
                             int index = isMymessage ? 1 : 2;
-                            theText = CryptoTool.decrypt(theText, Integer.parseInt(tagContent[index]));
+                            //theText = CryptoTool.decrypt(theText, nfcTag.getCesarKey());
+                            theText = nfcTag.decryptWithTag(theText, !isMymessage);
                             Message message1 = messageList.get(idToDecrypt);
                             message1.setMessage(theText);
                             messageList.set(idToDecrypt, message1);
@@ -160,7 +161,8 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
                         try {
                             theText = text.getText().toString();
                             if(theText.equals("") || theText == null) return;
-                            theText = CryptoTool.encrypt(theText, Integer.parseInt(tagContent[1]));
+                            //theText = CryptoTool.encrypt(theText, nfcTag.getSecondCesarKey());
+                            theText = nfcTag.encryptWithTag(theText, false);
                             JSONObject cred = new JSONObject();
                             try {
                                 cred.put("message", theText);
