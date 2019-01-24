@@ -49,6 +49,8 @@ public class EnterPasswordActivity extends AppCompatActivity {
     private void badPassMessage(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         setButtonColor(Color.RED);
+
+
     }
 
     private void setButtonColor(int i){
