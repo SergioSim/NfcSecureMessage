@@ -1,19 +1,10 @@
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 
-const db_config = {
+const con = mysql.createConnection({
 	host: "82.255.166.104",
 	user: "GrailsUser",
-	password: "GrailsPassword13?"};
-
-var con = mysql.createConnection({db_config});
-
-con.on('error', function(err) {
-	console.log(err.code); // 'ER_BAD_DB_ERROR'
-	if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-		setTimeout(() => con = mysql.createConnection({db_config}), 2000);
-	}
-});
+	password: "GrailsPassword13?"});
 
 exports.createUser = function(data, calback) {	
 	con.query("INSERT INTO GrailsUser.nfc_user  (login,password) VALUES (?,?)", [data.login, data.password], function(err, result){
