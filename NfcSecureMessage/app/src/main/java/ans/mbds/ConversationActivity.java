@@ -110,7 +110,8 @@ public class ConversationActivity extends NfcActivity implements MessageCellAdap
         Log.i(TAG, "message clicked: " + message.getMessage() + " id:" + message.getId());
         doDecrypt = true;
         idToDecrypt = holder.getAdapterPosition();
-        isMymessage = message.getConversation().equals(message.getRecipient());
+
+        isMymessage = contact.equals(message.getRecipient());
         showReadFragment();
     }
 
