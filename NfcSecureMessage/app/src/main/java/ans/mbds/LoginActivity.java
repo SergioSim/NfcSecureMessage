@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
             String succes = jobject.get("succes").getAsString();
             Log.i(LoginActivity.TAG, "result: succes: " + succes);
             if(succes.equals("true")) {
-                PasswordCheck.setButtonColor(Color.GREEN, LoginActivity.this.validBtn);
+               // PasswordCheck.setButtonColor(Color.GREEN, LoginActivity.this.validBtn);
                 String access_token = jobject.get("access_token").getAsString();
                 saveAccessToken(access_token);
                 final Intent main = new Intent(LoginActivity.this, MainActivity.class);

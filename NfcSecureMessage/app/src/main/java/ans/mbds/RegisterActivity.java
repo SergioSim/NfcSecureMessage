@@ -94,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
             String succes = jobject.get("succes").getAsString();
             Log.i(LoginActivity.TAG, "result: succes: " + succes);
             if (succes.equals("true")) {
-                PasswordCheck.setButtonColor(Color.GREEN, RegisterActivity.this.regsterBtn);
+                //PasswordCheck.setButtonColor(Color.GREEN, RegisterActivity.this.regsterBtn);
                 final Intent loginAct = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(loginAct);
                 Toast.makeText(getApplicationContext(),
